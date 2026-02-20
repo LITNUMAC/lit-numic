@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { supabase } from '$lib/supabaseClient';
     import { fly } from 'svelte/transition';
+    import Chart from 'chart.js/auto';
 
     let loading = true;
     let quizData = [];
