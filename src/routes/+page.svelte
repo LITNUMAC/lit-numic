@@ -1,0 +1,158 @@
+<script>
+  import { fade, fly } from 'svelte/transition';
+  import { reveal } from '$lib/actions/reveal';
+  import { Lock, Shuffle, CheckCircle, Smartphone, Rocket } from 'lucide-svelte';
+</script>
+
+<svelte:head>
+  <title>LIT-NUMIC - Belajar Literasi & Numerasi</title>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</svelte:head>
+
+<div class="min-h-screen font-poppins bg-white text-slate-800">
+
+  <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-blue-700 tracking-tight font-fredoka">LIT-NUMIC</a>
+      <div class="hidden md:flex gap-8 font-medium text-gray-500 text-sm">
+        <a href="#home" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Home</a>
+        <a href="#tentang" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Tentang</a>
+        <a href="#fitur" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Fitur</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/login" class="px-5 py-2 text-blue-600 font-bold border-2 border-blue-100 rounded-full hover:bg-blue-50 transition-all text-sm">Login</a>
+        <a href="/register" class="px-5 py-2 bg-blue-700 text-white font-bold rounded-full shadow-lg shadow-blue-200 hover:bg-blue-800 hover:shadow-xl transition-all text-sm">Daftar</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="pt-32 pb-20 px-6 bg-gradient-to-b from-blue-50 to-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <div in:fly={{ y: 30, duration: 1000 }} class="relative z-10 text-center md:text-left">
+        <h1 class="text-4xl md:text-6xl font-bold text-blue-900 leading-tight mb-6 font-fredoka">
+          Belajar Literasi & <br><span class="text-blue-600">Numerasi</span> Lewat <br> Komik Interaktif
+        </h1>
+        <p class="text-gray-500 text-lg mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">
+          Baca cerita kontekstual, pecahkan tantangan numerasi, dan pantau progres belajarmu dengan cara yang seru!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+          <a href="/register" class="px-8 py-4 bg-blue-700 text-white font-bold rounded-full shadow-xl shadow-blue-300 hover:scale-105 active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+            Mulai Sekarang <Rocket size={20} />
+          </a>
+          <a href="#cara-kerja" class="px-8 py-4 bg-white text-blue-700 border border-blue-100 font-bold rounded-full hover:bg-blue-50 transition-all text-center">Lihat Cara Kerja</a>
+        </div>
+      </div>
+      <div in:fly={{ x: 30, duration: 1000, delay: 200 }} class="relative flex justify-center items-center">
+        <div class="absolute inset-0 bg-blue-400/20 rounded-full blur-[80px] scale-75 animate-pulse"></div>
+        <lottie-player src="/buku.json" background="transparent" speed="1" style="width: 400px; height: 400px;" loop autoplay class="relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500"></lottie-player>
+      </div>
+    </div>
+  </section>
+
+  <section id="fitur" class="py-24 px-6 bg-blue-50/30">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16" use:reveal={{ delay: 0 }}>
+        <h2 class="text-3xl md:text-4xl font-bold text-blue-900 font-fredoka mb-4">Fitur Unggulan LIT-NUMIC</h2>
+        <p class="text-gray-500 max-w-xl mx-auto">Dirancang untuk pembelajaran literasi dan numerasi yang terstruktur dan menyenangkan.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div use:reveal={{ delay: 0 }} class="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 border border-white flex flex-col items-center text-center group">
+          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+            <Lock class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold text-blue-700 mb-3">Read First Validation</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Sistem memastikan kamu membaca komik sampai selesai sebelum bisa membuka tantangan.</p>
+        </div>
+
+        <div use:reveal={{ delay: 200 }} class="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 border border-white flex flex-col items-center text-center group">
+          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+            <Shuffle class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold text-blue-700 mb-3">Random Question</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Soal tantangan selalu diacak dari bank soal, membuat latihan tidak membosankan.</p>
+        </div>
+
+        <div use:reveal={{ delay: 400 }} class="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 border border-white flex flex-col items-center text-center group">
+          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+            <CheckCircle class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold text-blue-700 mb-3">Auto Grading</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Nilai langsung keluar otomatis dengan deteksi jawaban cerdas untuk soal isian.</p>
+        </div>
+
+        <div use:reveal={{ delay: 600 }} class="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 border border-white flex flex-col items-center text-center group">
+          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+            <Smartphone class="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 class="text-xl font-bold text-blue-700 mb-3">Responsive Reader</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Baca komik dengan nyaman di HP, Tablet, maupun Laptop dengan tampilan yang menyesuaikan.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cara-kerja" class="py-24 px-6 bg-white overflow-hidden relative">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-blue-900 font-fredoka text-center mb-16" use:reveal>Bagaimana Cara Kerjanya?</h2>
+
+      <div class="grid md:grid-cols-3 gap-8 relative">
+        
+        <div use:reveal={{ delay: 200 }} class="hidden md:block line-container">
+          <div class="line-fill"></div>
+        </div>
+
+        <div use:reveal={{ delay: 0 }} class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-24 h-24 bg-white text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 shadow-[0_0_20px_rgba(37,99,235,0.15)] border-4 border-blue-50 group-hover:border-yellow-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all duration-500">1</div>
+          <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-xl w-full">
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Baca Komik</h3>
+            <p class="text-gray-400 text-sm">Pilih judul yang menarik dan nikmati alur ceritanya.</p>
+          </div>
+        </div>
+
+        <div use:reveal={{ delay: 800 }} class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-24 h-24 bg-white text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 shadow-[0_0_20px_rgba(37,99,235,0.15)] border-4 border-blue-50 group-hover:border-yellow-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all duration-500">2</div>
+          <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-xl w-full">
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Kerjakan Tantangan</h3>
+            <p class="text-gray-400 text-sm">Jawab soal literasi & numerasi yang muncul di akhir cerita.</p>
+          </div>
+        </div>
+
+        <div use:reveal={{ delay: 1600 }} class="relative z-10 flex flex-col items-center text-center group">
+          <div class="w-24 h-24 bg-white text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 shadow-[0_0_20px_rgba(37,99,235,0.15)] border-4 border-blue-50 group-hover:border-yellow-400 group-hover:text-yellow-500 group-hover:scale-110 transition-all duration-500">3</div>
+          <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-xl w-full">
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Lihat Skor</h3>
+            <p class="text-gray-400 text-sm">Dapatkan nilai instan, pembahasan, dan naikkan levelmu!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 bg-blue-600 relative overflow-hidden text-center text-white">
+    <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+    <div class="relative z-10 max-w-3xl mx-auto" use:reveal={{ delay: 100 }}>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 font-fredoka">Siap Tantang Dirimu?</h2>
+      <p class="text-blue-100 text-lg mb-10">Baca komik seru, jawab tantangan, dan lihat skor terbaikmu sekarang juga.</p>
+      <a href="/register" class="inline-block px-10 py-4 bg-yellow-400 text-blue-900 font-bold rounded-full shadow-[0_10px_30px_rgba(250,204,21,0.4)] hover:shadow-[0_20px_40px_rgba(250,204,21,0.6)] hover:scale-105 hover:-translate-y-1 transition-all duration-300 text-xl">
+        Mulai Sekarang
+      </a>
+    </div>
+  </section>
+
+  <footer class="bg-slate-50 py-12 px-6 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6" use:reveal={{ delay: 0 }}>
+      <div class="text-2xl font-bold text-blue-700 font-fredoka">LIT-NUMIC</div>
+      <div class="flex gap-8 text-gray-500 font-medium">
+        <a href="#tentang" class="hover:text-blue-600">Tentang</a>
+        <a href="#kebijakan" class="hover:text-blue-600">Kebijakan</a>
+        <a href="#kontak" class="hover:text-blue-600">Kontak</a>
+      </div>
+      <div class="text-gray-400 text-sm">
+        &copy; 2026 Litnumac. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+</div>
