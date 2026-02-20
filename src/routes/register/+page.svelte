@@ -72,7 +72,7 @@
     </div>
 
     <button 
-        on:click={handleSignUp} 
+        onclick={handleSignUp} 
         disabled={loading} 
         class="w-full py-2 md:py-3 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
     >

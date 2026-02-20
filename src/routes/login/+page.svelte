@@ -54,7 +54,7 @@
     </div>
 
     <button 
-        on:click={handleLogin} 
+        onclick={handleLogin} 
         disabled={loading} 
         class="w-full py-2 md:py-3 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105"
     >

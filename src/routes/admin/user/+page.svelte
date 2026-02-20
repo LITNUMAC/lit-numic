@@ -58,7 +58,7 @@
 </script>
 
 <div in:fly={{ y: 20, duration: 500 }}>
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
             <h2 class="text-2xl font-bold text-blue-900 font-poppins">Manajemen Pengguna</h2>
             <p class="text-gray-500 text-sm">Pantau dan atur hak akses akun siswa atau admin.</p>
@@ -108,16 +108,16 @@
                                     {new Date(user.created_at).toLocaleDateString('id-ID')}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div class="flex justify-center gap-2 transition-opacity">
                                         <button 
-                                            on:click={() => toggleRole(user.id, user.role)}
+                                            onclick={() => toggleRole(user.id, user.role)}
                                             class="bg-yellow-50 text-yellow-600 p-2 rounded-lg hover:bg-yellow-500 hover:text-white transition-all text-xs font-bold"
                                             title="Ubah Role"
                                         >
                                             🔄
                                         </button>
                                         <button 
-                                            on:click={() => deleteUser(user.id)}
+                                            onclick={() => deleteUser(user.id)}
                                             class="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all text-xs font-bold"
                                             title="Hapus User"
                                         >

@@ -78,7 +78,7 @@
         </div>
         <div class="flex items-center gap-2 w-full md:w-auto">
             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Filter:</span>
-            <select bind:value={filterStatus} class="flex-1 md:flex-none bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500">
+            <select bind:value={filterStatus} class="flex-none bg-gray-50 border border-gray-100 px-4 py-3 rounded-2xl text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500">
                 <option>All</option>
                 <option>Active</option>
                 <option>Pending</option>
@@ -89,7 +89,7 @@
 
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-6 border-b border-gray-50 bg-gray-50/50">
-            <h3 class="font-bold text-blue-900 uppercase text-xs tracking-widest text-center md:text-left">Tabel Data Komik</h3>
+            <h3 class="font-bold text-blue-900 uppercase text-xs tracking-widest text-left">Tabel Data Komik</h3>
         </div>
         
         <div class="overflow-x-auto">
@@ -125,7 +125,7 @@
                                 </td>
                                 <td class="px-8 py-4 text-center">
                                     <button 
-                                        on:click={() => togglePublish(comic.id, comic.status)}
+                                        onclick={() => togglePublish(comic.id, comic.status)}
                                         title="Klik untuk mengubah status"
                                         class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-110 active:scale-95
                                         {comic.status === 'active' ? 'bg-green-100 text-green-600 border border-green-200' : 'bg-gray-100 text-gray-400 border border-gray-200'}">
@@ -135,8 +135,8 @@
                                 <td class="px-8 py-4">
                                     <div class="flex justify-center items-center gap-2">
                                         <a href="/admin/soal/{comic.id}" class="bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm">SOAL</a>
-                                        <button on:click={() => alert('Fitur Edit segera hadir!')} class="bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-indigo-600 hover:text-white transition-all shadow-sm">EDIT</button>
-                                        <button on:click={() => deleteComic(comic.id)} class="bg-red-50 text-red-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-500 hover:text-white transition-all shadow-sm">HAPUS</button>
+                                        <button onclick={() => alert('Fitur Edit segera hadir!')} class="bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-indigo-600 hover:text-white transition-all shadow-sm">EDIT</button>
+                                        <button onclick={() => deleteComic(comic.id)} class="bg-red-50 text-red-400 px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-red-500 hover:text-white transition-all shadow-sm">HAPUS</button>
                                     </div>
                                 </td>
                             </tr>

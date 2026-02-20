@@ -102,7 +102,7 @@
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
     {:else}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-blue-50 opacity-20 group-hover:scale-110 transition-transform"><Users size={80} /></div>
                 <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Total Siswa</h3>

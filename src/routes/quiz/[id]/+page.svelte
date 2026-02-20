@@ -131,10 +131,10 @@
     }
 </style>
 
-<div class="min-h-screen bg-pattern flex items-center justify-center p-4 lg:p-10 font-poppins overflow-hidden">
-    <div class="bg-white w-full max-w-6xl rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border-[6px] border-blue-600 relative flex flex-col min-h-[500px]">
+<div class="min-h-screen bg-pattern flex items-center justify-center p-4 md:p-10 font-poppins overflow-hidden">
+    <div class="bg-white w-full max-w-6xl rounded-2xl md:rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border-4 md:border-[6px] border-blue-600 relative flex flex-col min-h-[500px]">
         
-        <div class="pt-10 pb-6 px-10 text-center">
+        <div class="pt-8 md:pt-10 pb-4 md:pb-6 px-4 md:px-10 text-center">
             {#if !isReviewMode}
                 <span class="bg-blue-100 text-blue-700 px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest">Tantangan Seru</span>
                 <h1 class="text-4xl lg:text-5xl font-black text-blue-900 mt-4 font-fredoka uppercase tracking-tight">Mode Tantangan!</h1>
@@ -150,8 +150,8 @@
             {/if}
         </div>
 
-        <div class="flex-1 px-10 pb-12 overflow-y-auto max-h-[60vh]">
-            <div class="bg-blue-50/50 rounded-[2rem] p-8 lg:p-12 border-2 border-dashed border-blue-200 min-h-[300px] flex flex-col items-center justify-center relative w-full">
+        <div class="flex-1 px-4 md:px-10 pb-12 overflow-y-auto max-h-[70vh]">
+            <div class="bg-blue-50/50 rounded-2xl md:rounded-[2rem] p-6 md:p-12 border-2 border-dashed border-blue-200 min-h-[300px] flex flex-col items-center justify-center relative w-full">
                 
                 {#if loading}
                     <div class="animate-spin w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full"></div>
@@ -161,11 +161,11 @@
                     {#each activeQuestions as question, index}
                         {#if step === index + 1}
                             <div in:fly={{ y: 20, duration: 500 }} class="w-full">
-                                <div class="grid lg:grid-cols-2 gap-10 items-center">
+                                <div class="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-10 items-center">
                                     
                                     <div>
-                                        <h2 class="text-3xl font-black text-blue-900 mb-4 font-fredoka">Soal {index + 1}</h2>
-                                        <p class="text-gray-600 text-xl font-medium leading-relaxed">{question.question_text}</p>
+                                        <h2 class="text-2xl md:text-3xl font-black text-blue-900 mb-4 font-fredoka">Soal {index + 1}</h2>
+                                        <p class="text-gray-600 text-lg md:text-xl font-medium leading-relaxed">{question.question_text}</p>
                                     </div>
                                     
                                     <div class="space-y-4 w-full">
@@ -175,7 +175,7 @@
                                                     <Info size={18} /> Pilih satu jawaban yang paling tepat.
                                                 </div>
                                                 <button 
-                                                    on:click={() => { 
+                                                    onclick={() => { 
                                                         answers[question.id] = question.option_a; 
                                                         if(step < activeQuestions.length) step++; 
                                                     }}
@@ -185,7 +185,7 @@
                                                     <div class="w-6 h-6 rounded-full border-2 {answers[question.id] === question.option_a ? 'bg-blue-500 border-blue-500' : 'border-gray-200'}"></div>
                                                 </button>
                                                 <button 
-                                                    on:click={() => { 
+                                                    onclick={() => { 
                                                         answers[question.id] = question.option_b; 
                                                         if(step < activeQuestions.length) step++; 
                                                     }}
@@ -195,7 +195,7 @@
                                                     <div class="w-6 h-6 rounded-full border-2 {answers[question.id] === question.option_b ? 'bg-blue-500 border-blue-500' : 'border-gray-200'}"></div>
                                                 </button>
                                                 <button 
-                                                    on:click={() => { 
+                                                    onclick={() => { 
                                                         answers[question.id] = question.option_c; 
                                                         if(step < activeQuestions.length) step++; 
                                                     }}
@@ -205,7 +205,7 @@
                                                     <div class="w-6 h-6 rounded-full border-2 {answers[question.id] === question.option_c ? 'bg-blue-500 border-blue-500' : 'border-gray-200'}"></div>
                                                 </button>
                                                 <button 
-                                                    on:click={() => { 
+                                                    onclick={() => { 
                                                         answers[question.id] = question.option_d; 
                                                         if(step < activeQuestions.length) step++; 
                                                     }}
@@ -228,7 +228,7 @@
                                                 
                                                 {#if step < activeQuestions.length}
                                                     <button 
-                                                        on:click={() => step++} 
+                                                        onclick={() => step++} 
                                                         class="w-full mt-4 bg-blue-100 text-blue-700 py-4 rounded-2xl font-black text-xl hover:bg-blue-200 transition-all shadow-sm flex items-center justify-center gap-2">
                                                         Selanjutnya <ChevronRight size={24} />
                                                     </button>
@@ -237,7 +237,7 @@
                                         {/if}
 
                                         {#if step === activeQuestions.length}
-                                            <button on:click={submitQuiz} class="w-full mt-4 bg-yellow-400 text-blue-900 py-6 rounded-3xl font-black text-2xl shadow-[0_12px_0_0_#ca8a04] hover:translate-y-[4px] active:translate-y-[8px] active:shadow-none transition-all flex items-center justify-center gap-2">
+                                            <button onclick={submitQuiz} class="w-full mt-4 bg-yellow-400 text-blue-900 py-6 rounded-3xl font-black text-2xl shadow-[0_12px_0_0_#ca8a04] hover:translate-y-[4px] active:translate-y-[8px] active:shadow-none transition-all flex items-center justify-center gap-2">
                                                 KIRIM JAWABAN <Rocket size={24} />
                                             </button>
                                         {/if}
@@ -284,7 +284,7 @@
                                 </div>
                             </div>
                         {/each}
-                        <button on:click={() => window.location.href = '/dashboard'} class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Kembali ke Dashboard</button>
+                        <button onclick={() => window.location.href = '/dashboard'} class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Kembali ke Dashboard</button>
                     </div>
                 {/if}
 

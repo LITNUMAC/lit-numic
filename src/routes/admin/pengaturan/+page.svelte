@@ -30,7 +30,7 @@
     }
 </script>
 
-<div class="p-8 max-w-2xl mx-auto font-poppins">
+<div class="p-8 font-poppins">
     <h2 class="text-3xl font-bold text-blue-900 mb-8">⚙️ Pengaturan Aplikasi</h2>
 
     {#if loading}
@@ -43,8 +43,9 @@
             </div>
             
             <button 
-                on:click={toggleLeaderboard} 
+                onclick={toggleLeaderboard} 
                 disabled={isSaving}
+                aria-label="Toggle Leaderboard Status"
                 class="relative inline-flex h-10 w-20 items-center rounded-full transition-colors duration-300 focus:outline-none {isActive ? 'bg-green-500' : 'bg-gray-300'}"
             >
                 <span class="inline-block h-8 w-8 transform rounded-full bg-white transition-transform duration-300 {isActive ? 'translate-x-11' : 'translate-x-1'} shadow-md"></span>

@@ -2,19 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 1. SCROLLBAR GANTENG */
+/* 0. GLOBAL LAYOUT (RESPONSIVE) */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* 1. SCROLLBAR GANTENG (ADVANCED) */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 20px;
+  background: #3b82f6; /* Blue 500 */
+  background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #2563eb;
+  background-image: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #f1f5f9;
 }
 
 /* 2. LOGIKA ANIMASI MASUK (Anti-Gravity) */

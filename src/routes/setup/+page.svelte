@@ -105,10 +105,9 @@
           type="text" 
           placeholder="Ketik namamu di sini..." 
           class="w-full text-center bg-transparent border-b-2 border-white/30 focus:border-yellow-400 text-3xl py-4 outline-none placeholder-white/30 transition-all mb-12 text-white font-bold"
-          autofocus
         />
 
-        <button on:click={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
+        <button onclick={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
           Lanjut ➔
         </button>
       </div>
@@ -146,10 +145,10 @@
         </div>
 
         <div class="flex justify-center gap-4">
-          <button on:click={() => step = 1} class="px-6 py-3 text-white/70 hover:text-white font-medium">
+          <button onclick={() => step = 1} class="px-6 py-3 text-white/70 hover:text-white font-medium">
             Kembali
           </button>
-          <button on:click={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
+          <button onclick={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
             Lanjut ➔
           </button>
         </div>
@@ -163,7 +162,7 @@
         
         <div class="grid grid-cols-2 gap-6 mb-12">
           <button 
-            on:click={() => selectGender('male')}
+            onclick={() => selectGender('male')}
             class="p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-4 group cursor-pointer
               {formData.gender === 'male' 
                 ? 'bg-blue-800/40 border-yellow-400 scale-105 shadow-[0_0_20px_rgba(250,204,21,0.5)]' 
@@ -174,7 +173,7 @@
           </button>
 
           <button 
-            on:click={() => selectGender('female')}
+            onclick={() => selectGender('female')}
             class="p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-4 group cursor-pointer
               {formData.gender === 'female' 
                 ? 'bg-pink-800/40 border-pink-400 scale-105 shadow-[0_0_20px_rgba(244,114,182,0.5)]' 
@@ -186,10 +185,10 @@
         </div>
 
         <div class="flex justify-center gap-4">
-          <button on:click={() => step = 2} class="px-6 py-3 text-white/70 hover:text-white font-medium">
+          <button onclick={() => step = 2} class="px-6 py-3 text-white/70 hover:text-white font-medium">
             Kembali
           </button>
-          <button on:click={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
+          <button onclick={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
             Lanjut ➔
           </button>
         </div>
@@ -203,7 +202,7 @@
         
         <div class="grid grid-cols-2 gap-6 mb-12">
           <button 
-            on:click={() => selectLanguage('id')}
+            onclick={() => selectLanguage('id')}
             class="p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-4 group cursor-pointer
               {formData.language === 'id' 
                 ? 'bg-blue-800/40 border-yellow-400 scale-105 shadow-[0_0_20px_rgba(250,204,21,0.5)]' 
@@ -214,7 +213,7 @@
           </button>
 
           <button 
-            on:click={() => selectLanguage('en')}
+            onclick={() => selectLanguage('en')}
             class="p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-4 group cursor-pointer
               {formData.language === 'en' 
                 ? 'bg-blue-800/40 border-yellow-400 scale-105 shadow-[0_0_20px_rgba(250,204,21,0.5)]' 
@@ -226,10 +225,10 @@
         </div>
 
         <div class="flex justify-center gap-4">
-          <button on:click={() => step = 3} class="px-6 py-3 text-white/70 hover:text-white font-medium">
+          <button onclick={() => step = 3} class="px-6 py-3 text-white/70 hover:text-white font-medium">
             Kembali
           </button>
-          <button on:click={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
+          <button onclick={nextStep} class="px-8 py-4 bg-white text-blue-700 font-bold rounded-full text-lg shadow-lg hover:scale-105 transition-all">
             Lanjut ➔
           </button>
         </div>
@@ -267,7 +266,7 @@
           </div>
         </div>
 
-        <button on:click={finishSetup} disabled={loading} class="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-xl shadow-[0_0_30px_rgba(250,204,21,0.5)] hover:scale-105 transition-all">
+        <button onclick={finishSetup} disabled={loading} class="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-xl shadow-[0_0_30px_rgba(250,204,21,0.5)] hover:scale-105 transition-all">
           {loading ? 'Menyiapkan Dashboard...' : 'Masuk Dashboard'}
         </button>
       </div>

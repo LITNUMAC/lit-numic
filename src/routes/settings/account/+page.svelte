@@ -55,7 +55,7 @@
         </p>
         
         <button 
-            on:click={deleteAccount}
+            onclick={deleteAccount}
             class="px-5 py-2.5 bg-white border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm flex items-center gap-2"
         >
             <Trash2 size={16} />

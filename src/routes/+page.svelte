@@ -1,7 +1,9 @@
 <script>
-  import { fade, fly } from 'svelte/transition';
+  import { fade, fly, slide } from 'svelte/transition';
   import { reveal } from '$lib/actions/reveal';
-  import { Lock, Shuffle, CheckCircle, Smartphone, Rocket } from 'lucide-svelte';
+  import { Lock, Shuffle, CheckCircle, Smartphone, Rocket, Menu, X } from 'lucide-svelte';
+
+  let isMobileMenuOpen = $state(false);
 </script>
 
 <svelte:head>
@@ -12,24 +14,11 @@
 
 <div class="min-h-screen font-poppins bg-white text-slate-800">
 
-  <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="/" class="text-2xl font-bold text-blue-700 tracking-tight font-fredoka">LIT-NUMIC</a>
-      <div class="hidden md:flex gap-8 font-medium text-gray-500 text-sm">
-        <a href="#home" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Home</a>
-        <a href="#tentang" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Tentang</a>
-        <a href="#fitur" class="hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-yellow-400 pb-1">Fitur</a>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="/login" class="px-5 py-2 text-blue-600 font-bold border-2 border-blue-100 rounded-full hover:bg-blue-50 transition-all text-sm">Login</a>
-        <a href="/register" class="px-5 py-2 bg-blue-700 text-white font-bold rounded-full shadow-lg shadow-blue-200 hover:bg-blue-800 hover:shadow-xl transition-all text-sm">Daftar</a>
-      </div>
-    </div>
-  </nav>
+  <!-- Global layout now provides navigation -->
 
   <section id="home" class="pt-32 pb-20 px-6 bg-gradient-to-b from-blue-50 to-white relative overflow-hidden">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-      <div in:fly={{ y: 30, duration: 1000 }} class="relative z-10 text-center md:text-left">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div in:fly={{ y: 30, duration: 1000 }} class="relative z-10 text-center md:text-left md:pl-10">
         <h1 class="text-4xl md:text-6xl font-bold text-blue-900 leading-tight mb-6 font-fredoka">
           Belajar Literasi & <br><span class="text-blue-600">Numerasi</span> Lewat <br> Komik Interaktif
         </h1>
@@ -45,7 +34,14 @@
       </div>
       <div in:fly={{ x: 30, duration: 1000, delay: 200 }} class="relative flex justify-center items-center">
         <div class="absolute inset-0 bg-blue-400/20 rounded-full blur-[80px] scale-75 animate-pulse"></div>
-        <lottie-player src="/buku.json" background="transparent" speed="1" style="width: 400px; height: 400px;" loop autoplay class="relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500"></lottie-player>
+        <lottie-player 
+          src="/buku.json" 
+          background="transparent" 
+          speed="1" 
+          class="relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500 w-full max-w-[400px] aspect-square" 
+          loop 
+          autoplay
+        ></lottie-player>
       </div>
     </div>
   </section>
@@ -53,16 +49,16 @@
   <section id="fitur" class="py-24 px-6 bg-blue-50/30">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16" use:reveal={{ delay: 0 }}>
-        <h2 class="text-3xl md:text-4xl font-bold text-blue-900 font-fredoka mb-4">Fitur Unggulan LIT-NUMIC</h2>
+        <h2 class="text-4xl font-bold text-blue-900 font-fredoka mb-4">Fitur Unggulan LIT-NUMIC</h2>
         <p class="text-gray-500 max-w-xl mx-auto">Dirancang untuk pembelajaran literasi dan numerasi yang terstruktur dan menyenangkan.</p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div use:reveal={{ delay: 0 }} class="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 border border-white flex flex-col items-center text-center group">
           <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
             <Lock class="w-8 h-8 text-blue-600" />
           </div>
-          <h3 class="text-xl font-bold text-blue-700 mb-3">Read First Validation</h3>
+          <h3 class="text-xl font-bold text-blue-700 mb-2">Read First Validation</h3>
           <p class="text-gray-400 text-sm leading-relaxed">Sistem memastikan kamu membaca komik sampai selesai sebelum bisa membuka tantangan.</p>
         </div>
 
@@ -70,7 +66,7 @@
           <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
             <Shuffle class="w-8 h-8 text-blue-600" />
           </div>
-          <h3 class="text-xl font-bold text-blue-700 mb-3">Random Question</h3>
+          <h3 class="text-xl font-bold text-blue-700 mb-2">Random Question</h3>
           <p class="text-gray-400 text-sm leading-relaxed">Soal tantangan selalu diacak dari bank soal, membuat latihan tidak membosankan.</p>
         </div>
 
@@ -78,7 +74,7 @@
           <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
             <CheckCircle class="w-8 h-8 text-blue-600" />
           </div>
-          <h3 class="text-xl font-bold text-blue-700 mb-3">Auto Grading</h3>
+          <h3 class="text-xl font-bold text-blue-700 mb-2">Auto Grading</h3>
           <p class="text-gray-400 text-sm leading-relaxed">Nilai langsung keluar otomatis dengan deteksi jawaban cerdas untuk soal isian.</p>
         </div>
 
@@ -86,7 +82,7 @@
           <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
             <Smartphone class="w-8 h-8 text-blue-600" />
           </div>
-          <h3 class="text-xl font-bold text-blue-700 mb-3">Responsive Reader</h3>
+          <h3 class="text-xl font-bold text-blue-700 mb-2">Responsive Reader</h3>
           <p class="text-gray-400 text-sm leading-relaxed">Baca komik dengan nyaman di HP, Tablet, maupun Laptop dengan tampilan yang menyesuaikan.</p>
         </div>
       </div>
@@ -95,9 +91,9 @@
 
   <section id="cara-kerja" class="py-24 px-6 bg-white overflow-hidden relative">
     <div class="max-w-7xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-bold text-blue-900 font-fredoka text-center mb-16" use:reveal>Bagaimana Cara Kerjanya?</h2>
+      <h2 class="text-4xl font-bold text-blue-900 font-fredoka text-center mb-16" use:reveal>Bagaimana Cara Kerjanya?</h2>
 
-      <div class="grid md:grid-cols-3 gap-8 relative">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
         
         <div use:reveal={{ delay: 200 }} class="hidden md:block line-container">
           <div class="line-fill"></div>
@@ -133,7 +129,7 @@
   <section class="py-24 px-6 bg-blue-600 relative overflow-hidden text-center text-white">
     <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
     <div class="relative z-10 max-w-3xl mx-auto" use:reveal={{ delay: 100 }}>
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 font-fredoka">Siap Tantang Dirimu?</h2>
+      <h2 class="text-5xl font-bold mb-6 font-fredoka">Siap Tantang Dirimu?</h2>
       <p class="text-blue-100 text-lg mb-10">Baca komik seru, jawab tantangan, dan lihat skor terbaikmu sekarang juga.</p>
       <a href="/register" class="inline-block px-10 py-4 bg-yellow-400 text-blue-900 font-bold rounded-full shadow-[0_10px_30px_rgba(250,204,21,0.4)] hover:shadow-[0_20px_40px_rgba(250,204,21,0.6)] hover:scale-105 hover:-translate-y-1 transition-all duration-300 text-xl">
         Mulai Sekarang

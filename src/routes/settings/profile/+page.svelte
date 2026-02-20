@@ -225,7 +225,7 @@
   <h2 class="text-2xl font-bold text-blue-900 mb-6 font-fredoka border-b border-gray-100 pb-4">Profil Saya</h2>
 
   <!-- Avatar Section -->
-  <div class="flex items-center gap-6 mb-10">
+  <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-10 text-center md:text-left">
     <div class="relative group">
       <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-50 shadow-md">
         <img src={avatarUrl} alt="Avatar" class="w-full h-full object-cover" />
@@ -236,7 +236,7 @@
         {#if avatarUrl && !avatarUrl.includes('dicebear')}
             <button 
                 type="button"
-                on:click={deleteAvatar}
+                onclick={deleteAvatar}
                 class="bg-red-50 p-2 rounded-full text-red-500 shadow-md hover:scale-110 transition-all border border-red-100 group-hover:block"
                 title="Hapus Foto"
             >
@@ -247,7 +247,7 @@
         <!-- Gallery Button -->
         <button 
             type="button"
-            on:click={() => galleryInput.click()}
+            onclick={() => galleryInput.click()}
             class="bg-white p-2 rounded-full text-blue-900 shadow-md hover:scale-110 transition-all border border-blue-100 group-hover:block"
             title="Pilih dari Galeri/File"
         >
@@ -257,7 +257,7 @@
         <!-- Camera Button -->
         <button 
             type="button"
-            on:click={() => cameraInput.click()}
+            onclick={() => cameraInput.click()}
             class="bg-yellow-400 p-2 rounded-full text-blue-900 shadow-lg hover:scale-110 transition-all border-2 border-white"
             title="Ambil Foto"
         >
@@ -271,7 +271,7 @@
         accept="image/*" 
         class="hidden" 
         bind:this={galleryInput} 
-        on:change={handleFileSelect} 
+        onchange={handleFileSelect} 
       />
       
       <input 
@@ -280,7 +280,7 @@
         capture="environment"
         class="hidden" 
         bind:this={cameraInput} 
-        on:change={handleFileSelect} 
+        onchange={handleFileSelect} 
       />
     </div>
     
@@ -299,11 +299,12 @@
   </div>
 
   <!-- Form -->
-  <form on:submit|preventDefault={updateProfile} class="space-y-6">
+  <form onsubmit={(e) => { e.preventDefault(); updateProfile(); }} class="space-y-6">
     
     <div>
-      <label class="block text-sm font-bold text-slate-600 mb-2">Nama Lengkap</label>
+      <label for="full_name" class="block text-sm font-bold text-slate-600 mb-2">Nama Lengkap</label>
       <input 
+        id="full_name"
         type="text" 
         bind:value={profile.full_name}
         class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
@@ -312,10 +313,11 @@
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-slate-600 mb-2">Username</label>
+      <label for="username" class="block text-sm font-bold text-slate-600 mb-2">Username</label>
       <div class="relative">
         <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">@</span>
         <input 
+          id="username"
           type="text" 
           bind:value={profile.username}
           class="w-full pl-10 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
@@ -324,10 +326,11 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
-        <label class="block text-sm font-bold text-slate-600 mb-2">Sekolah</label>
+        <label for="school_origin" class="block text-sm font-bold text-slate-600 mb-2">Sekolah</label>
         <input 
+          id="school_origin"
           type="text" 
           bind:value={profile.school_origin}
           class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
@@ -335,8 +338,9 @@
         />
       </div>
       <div>
-        <label class="block text-sm font-bold text-slate-600 mb-2">Kelas</label>
+        <label for="class_select" class="block text-sm font-bold text-slate-600 mb-2">Kelas</label>
         <select 
+          id="class_select"
           bind:value={profile.class}
           class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all bg-white"
         >

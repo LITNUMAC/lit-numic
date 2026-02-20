@@ -180,7 +180,7 @@
   
   <header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-blue-100 px-6 py-4 flex flex-col gap-2">
     <div class="flex justify-between items-center">
-        <button on:click={() => { saveProgressToDB(); window.history.back(); }} class="group flex items-center gap-2 text-blue-900 font-bold">
+        <button onclick={() => { saveProgressToDB(); window.history.back(); }} class="group flex items-center gap-2 text-blue-900 font-bold">
             <span class="bg-blue-100 p-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all"><ArrowLeft size={20} /></span>
             <span class="text-sm hidden sm:block">Kembali</span>
         </button>
@@ -211,7 +211,7 @@
 
   <main 
     bind:this={mainContainer}
-    on:scroll={handleScroll}
+    onscroll={handleScroll}
     class="flex-1 flex flex-col items-center gap-6 pt-32 pb-12 px-4 overflow-y-auto scroll-smooth"
   >
     {#if loading}
@@ -241,7 +241,7 @@
                 
                 {#if isUnlocked}
                     <button 
-                        on:click={() => { saveProgressToDB(); window.location.href = `/quiz/${comicId}`; }}
+                        onclick={() => { saveProgressToDB(); window.location.href = `/quiz/${comicId}`; }}
                         class="bg-blue-600 text-white px-10 py-4 rounded-3xl font-black text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                     >
                         <span>AMBIL TANTANGAN</span>

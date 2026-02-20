@@ -88,11 +88,11 @@
 
 <div in:fly={{ y: 20, duration: 500 }} class="max-w-3xl mx-auto">
     
-    <button on:click={() => window.history.back()} class="text-blue-600 font-bold mb-6 flex items-center gap-2 hover:text-blue-800 transition-colors">
+    <button onclick={() => window.history.back()} class="text-blue-600 font-bold mb-6 flex items-center gap-2 hover:text-blue-800 transition-colors">
         <span>←</span> Kembali
     </button>
 
-    <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
+    <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
         <h2 class="text-3xl font-bold text-blue-900 mb-2 font-poppins">Upload Komik Baru</h2>
         <p class="text-gray-500 mb-8">Pastikan file PDF sudah dikompres (maks 5MB) agar aplikasi tetap ringan.</p>
 
@@ -108,25 +108,25 @@
             </div>
         {/if}
 
-        <form on:submit|preventDefault={uploadComic} class="space-y-6">
+        <form onsubmit={(e) => { e.preventDefault(); uploadComic(); }} class="space-y-6">
             
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Judul Komik</label>
-                <input type="text" bind:value={title} placeholder="Contoh: Misteri Angka Hilang" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium" required disabled={loading} />
+                <label for="title" class="block text-sm font-bold text-gray-700 mb-2">Judul Komik</label>
+                <input id="title" type="text" bind:value={title} placeholder="Contoh: Misteri Angka Hilang" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium" required disabled={loading} />
             </div>
 
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi / Sinopsis Singkat</label>
-                <textarea bind:value={description} rows="3" placeholder="Ceritakan sedikit tentang komik ini..." class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium resize-none" required disabled={loading}></textarea>
+                <label for="description" class="block text-sm font-bold text-gray-700 mb-2">Deskripsi / Sinopsis Singkat</label>
+                <textarea id="description" bind:value={description} rows="3" placeholder="Ceritakan sedikit tentang komik ini..." class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium resize-none" required disabled={loading}></textarea>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="border-2 border-dashed border-gray-200 rounded-3xl p-6 text-center hover:bg-gray-50 transition-colors relative">
                     <label class="cursor-pointer block">
                         <div class="text-4xl mb-3">🖼️</div>
                         <span class="block text-sm font-bold text-blue-600 mb-1">Pilih Gambar Cover</span>
                         <span class="block text-xs text-gray-400">Format: JPG, PNG, WEBP</span>
-                        <input type="file" accept="image/*" on:change={handleCoverChange} class="hidden" required disabled={loading} />
+                        <input type="file" accept="image/*" onchange={handleCoverChange} class="hidden" id="cover-input" required disabled={loading} />
                     </label>
                     {#if coverFile}
                         <p class="mt-4 text-xs font-bold text-green-600 bg-green-50 py-1 px-2 rounded-lg inline-block">✓ {coverFile.name}</p>
@@ -138,7 +138,7 @@
                         <div class="text-4xl mb-3">📄</div>
                         <span class="block text-sm font-bold text-blue-600 mb-1">Pilih File PDF</span>
                         <span class="block text-xs text-red-400 font-bold">MAKSIMAL 5 MB</span>
-                        <input type="file" accept="application/pdf" on:change={handlePdfChange} class="hidden" required disabled={loading} />
+                        <input type="file" accept="application/pdf" onchange={handlePdfChange} class="hidden" id="pdf-input" required disabled={loading} />
                     </label>
                     {#if pdfFile}
                         <p class="mt-4 text-xs font-bold text-green-600 bg-green-50 py-1 px-2 rounded-lg inline-block">✓ {pdfFile.name}</p>

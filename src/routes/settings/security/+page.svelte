@@ -44,12 +44,13 @@
 <div class="max-w-xl">
   <h2 class="text-2xl font-bold text-blue-900 mb-6 font-fredoka border-b border-gray-100 pb-4">Keamanan & Password</h2>
 
-  <form on:submit|preventDefault={updatePassword} class="space-y-6">
+  <form onsubmit={(e) => { e.preventDefault(); updatePassword(); }} class="space-y-6">
     
     <div class="relative">
-      <label class="block text-sm font-bold text-slate-600 mb-2">Password Baru</label>
+      <label for="new_password" class="block text-sm font-bold text-slate-600 mb-2">Password Baru</label>
       <div class="relative">
         <input 
+          id="new_password"
           type="password" 
           bind:value={newPassword}
           class="w-full pl-11 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
@@ -62,9 +63,10 @@
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-slate-600 mb-2">Konfirmasi Password Baru</label>
+      <label for="confirm_password" class="block text-sm font-bold text-slate-600 mb-2">Konfirmasi Password Baru</label>
       <div class="relative">
         <input 
+          id="confirm_password"
           type="password" 
           bind:value={confirmPassword}
           class="w-full pl-11 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"

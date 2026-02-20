@@ -95,7 +95,7 @@
 <div in:fly={{ y: 20, duration: 500 }} class="max-w-6xl mx-auto pb-10">
     
     <div class="flex items-center gap-4 mb-8">
-        <button on:click={() => window.history.back()} class="bg-white p-3 rounded-xl shadow-sm hover:bg-gray-50 transition-colors border border-gray-100">
+        <button onclick={() => window.history.back()} class="bg-white p-3 rounded-xl shadow-sm hover:bg-gray-50 transition-colors border border-gray-100">
             ←
         </button>
         <div>
@@ -109,22 +109,22 @@
             <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
         </div>
     {:else}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8">
             
-            <div class="lg:col-span-5 bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 h-fit sticky top-6">
+            <div class="w-full lg:col-span-5 bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 h-fit lg:sticky lg:top-6">
                 <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
                      Tambah Soal Baru
                 </h3>
 
                 <div class="flex bg-gray-100 p-1 rounded-xl mb-6">
-                    <button on:click={() => form.question_type = 'pilihan_ganda'} class="flex-1 text-sm font-bold py-2 rounded-lg transition-all {form.question_type === 'pilihan_ganda' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}">Pilihan Ganda</button>
-                    <button on:click={() => form.question_type = 'isian'} class="flex-1 text-sm font-bold py-2 rounded-lg transition-all {form.question_type === 'isian' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}">Isian Singkat</button>
+                    <button onclick={() => form.question_type = 'pilihan_ganda'} class="flex-1 text-sm font-bold py-2 rounded-lg transition-all {form.question_type === 'pilihan_ganda' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}">Pilihan Ganda</button>
+                    <button onclick={() => form.question_type = 'isian'} class="flex-1 text-sm font-bold py-2 rounded-lg transition-all {form.question_type === 'isian' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}">Isian Singkat</button>
                 </div>
 
-                <form on:submit|preventDefault={addQuestion} class="space-y-4">
+                <form onsubmit={(e) => { e.preventDefault(); addQuestion(); }} class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pertanyaan</label>
-                        <textarea bind:value={form.question_text} rows="3" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm" placeholder="Ketik pertanyaan di sini..." required></textarea>
+                        <label for="question_text" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pertanyaan</label>
+                        <textarea id="question_text" bind:value={form.question_text} rows="3" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm" placeholder="Ketik pertanyaan di sini..." required></textarea>
                     </div>
 
                     {#if form.question_type === 'pilihan_ganda'}
@@ -132,26 +132,26 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pilihan Jawaban</label>
                             <div class="flex items-center gap-3">
                                 <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">A</span>
-                                <input bind:value={form.option_a} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan A" required>
+                                <input id="option_a" bind:value={form.option_a} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan A" required>
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">B</span>
-                                <input bind:value={form.option_b} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan B" required>
+                                <input id="option_b" bind:value={form.option_b} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan B" required>
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">C</span>
-                                <input bind:value={form.option_c} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan C" required>
+                                <input id="option_c" bind:value={form.option_c} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan C" required>
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">D</span>
-                                <input bind:value={form.option_d} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan D" required>
+                                <input id="option_d" bind:value={form.option_d} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan D" required>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 pt-2" in:fade>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kunci Jawaban</label>
-                                <select bind:value={form.correct_answer_pg} class="w-full px-4 py-3 bg-green-50 text-green-700 border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-bold cursor-pointer">
+                                <label for="correct_answer_pg" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kunci Jawaban</label>
+                                <select id="correct_answer_pg" bind:value={form.correct_answer_pg} class="w-full px-4 py-3 bg-green-50 text-green-700 border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-bold cursor-pointer">
                                     <option value="A">Jawaban A</option>
                                     <option value="B">Jawaban B</option>
                                     <option value="C">Jawaban C</option>
@@ -159,8 +159,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tag (Opsional)</label>
-                                <input bind:value={form.tags} type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Cth: Logika">
+                                <label for="tags" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tag (Opsional)</label>
+                                <input id="tags" bind:value={form.tags} type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Cth: Logika">
                             </div>
                         </div>
                     {/if}
@@ -168,8 +168,8 @@
                     {#if form.question_type === 'isian'}
                         <div class="pt-2 space-y-4" in:fade>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kunci Jawaban Benar</label>
-                                <input bind:value={form.correct_answer_isian} type="text" class="w-full px-4 py-3 bg-green-50 text-green-800 border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-bold placeholder-green-300" placeholder="Ketik jawaban yang benar di sini..." required>
+                                <label for="correct_answer_isian" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kunci Jawaban Benar</label>
+                                <input id="correct_answer_isian" bind:value={form.correct_answer_isian} type="text" class="w-full px-4 py-3 bg-green-50 text-green-800 border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none font-bold placeholder-green-300" placeholder="Ketik jawaban yang benar di sini..." required>
                                 <p class="text-[10px] text-gray-400 mt-1">*Siswa harus mengetik jawaban persis seperti ini agar dianggap benar.</p>
                             </div>
                             <div>
@@ -190,7 +190,7 @@
                 </form>
             </div>
 
-            <div class="lg:col-span-7">
+            <div class="w-full lg:col-span-7">
                 <div class="flex items-center justify-between mb-4 px-2">
                     <h3 class="text-lg font-bold text-gray-800">Daftar Soal ({questions.length})</h3>
                 </div>
@@ -204,7 +204,7 @@
                     <div class="space-y-4">
                         {#each questions as q, i (q.id)}
                             <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative group transition-all hover:border-blue-200" in:fade>
-                                <button on:click={() => deleteQuestion(q.id)} class="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors bg-gray-50 hover:bg-red-50 p-2 rounded-lg opacity-0 group-hover:opacity-100" title="Hapus Soal">
+                                <button onclick={() => deleteQuestion(q.id)} class="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors bg-gray-50 hover:bg-red-50 p-2 rounded-lg opacity-0 group-hover:opacity-100" title="Hapus Soal">
                                     <Trash2 size={18} />
                                 </button>
 
@@ -224,7 +224,7 @@
                                         <p class="font-medium text-gray-800 mb-4">{q.question_text}</p>
                                         
                                         {#if q.type === 'pilihan_ganda' || !q.type}
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                                            <div class="grid grid-cols-2 gap-2 text-sm">
                                                 <div class="p-2 rounded-lg border {q.correct_answer === 'A' ? 'bg-green-50 border-green-200 text-green-700 font-bold' : 'bg-gray-50 border-gray-100 text-gray-600'}">
                                                     <span class="mr-2 opacity-50">A.</span> {q.option_a}
                                                 </div>

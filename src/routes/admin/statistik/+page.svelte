@@ -109,7 +109,8 @@
 
         <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-8 border-b border-gray-50 font-bold text-gray-800 text-xl">Log Aktivitas Siswa</div>
-            <table class="w-full text-left">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
                 <thead class="bg-gray-50 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                     <tr>
                         <th class="px-8 py-4">Waktu</th>
@@ -131,6 +132,7 @@
                     {/each}
                 </tbody>
             </table>
+            </div>
         </div>
     {/if}
 </div>
