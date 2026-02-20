@@ -4,6 +4,7 @@
     import { supabase } from '$lib/supabaseClient';
     import { fly, fade } from 'svelte/transition';
     import { Trash2 } from 'lucide-svelte';
+    import { getCached, setCached } from '$lib/cache';
 
     let comicId = $page.params.id;
     let comic = null;
@@ -29,13 +30,34 @@
     });
 
     async function fetchData() {
-        loading = true;
-        const { data: comicData } = await supabase.from('comics').select('*').eq('id', comicId).single();
-        if (comicData) comic = comicData;
+        // 1. Cek Cache
+        const cached = getCached('questions', comicId);
+        if (cached) {
+            comic = cached.comic;
+            questions = cached.questions;
+            loading = false;
+            return;
+        }
 
-        const { data: qData } = await supabase.from('questions').select('*').eq('comic_id', comicId).order('created_at', { ascending: true });
-        if (qData) questions = qData;
+        loading = true;
+
+        // 2. Parallel Fetching dengan Specific Columns
+        const [comicRes, questionsRes] = await Promise.all([
+            supabase.from('comics').select('id, title').eq('id', comicId).single(),
+            supabase.from('questions')
+                .select('id, comic_id, type, question_text, option_a, option_b, option_c, option_d, correct_answer, tags, created_at')
+                .eq('comic_id', comicId)
+                .order('created_at', { ascending: true })
+        ]);
+
+        if (comicRes.data) comic = comicRes.data;
+        if (questionsRes.data) questions = questionsRes.data;
         
+        // 3. Simpan ke Cache
+        if (comic && questions) {
+            setCached('questions', { comic, questions }, comicId);
+        }
+
         loading = false;
     }
 

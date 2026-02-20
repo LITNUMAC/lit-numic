@@ -3,6 +3,7 @@
     import { supabase } from '$lib/supabaseClient';
     import { fly, fade } from 'svelte/transition';
     import { Search } from 'lucide-svelte';
+    import { getCached, setCached } from '$lib/cache';
 
     let comics = [];
     let loading = true;
@@ -14,13 +15,30 @@
     });
 
     async function fetchComics() {
+        // 1. Cek Cache
+        const cached = getCached('comics');
+        if (cached && searchQuery === '' && filterStatus === 'All') {
+            comics = cached;
+            loading = false;
+            return;
+        }
+
         loading = true;
+        
+        // 2. Fetch dengan Specific Columns & Limit
         const { data, error } = await supabase
             .from('comics')
-            .select('*')
-            .order('created_at', { ascending: false });
+            .select('id, title, cover_url, description, status, level, created_at')
+            .order('created_at', { ascending: false })
+            .limit(20);
 
-        if (!error) comics = data;
+        if (!error) {
+            comics = data;
+            // 3. Simpan ke Cache jika ini query default
+            if (searchQuery === '' && filterStatus === 'All') {
+                setCached('comics', data);
+            }
+        }
         loading = false;
     }
 

@@ -2,27 +2,40 @@
     import { onMount } from 'svelte';
     import { supabase } from '$lib/supabaseClient';
     import { fly } from 'svelte/transition';
+    import { getCached, setCached } from '$lib/cache';
 
     let comics = [];
     let loading = true;
 
     onMount(async () => {
-        // 1. Ambil semua komik
-        const { data: comicsData, error } = await supabase
-            .from('comics')
-            .select('*')
-            .order('created_at', { ascending: false });
+        // 1. Cek Cache
+        const cached = getCached('questionBank');
+        if (cached) {
+            comics = cached;
+            loading = false;
+            return;
+        }
 
-        if (!error && comicsData) {
-            // 2. Ambil data soal untuk menghitung jumlah soal per komik
-            const { data: questionsData } = await supabase.from('questions').select('comic_id');
-            
+        loading = true;
+
+        // 2. Parallel Fetching dengan Specific Columns
+        const [comicsRes, questionsRes] = await Promise.all([
+            supabase.from('comics').select('id, title, cover_url').order('created_at', { ascending: false }),
+            supabase.from('questions').select('comic_id')
+        ]);
+
+        const comicsData = comicsRes.data;
+        const questionsData = questionsRes.data;
+
+        if (!comicsRes.error && comicsData) {
             // 3. Gabungkan datanya
             comics = comicsData.map(comic => {
-                // Hitung ada berapa soal yang punya comic_id sama dengan komik ini
                 const questionCount = questionsData ? questionsData.filter(q => q.comic_id === comic.id).length : 0;
                 return { ...comic, questionCount };
             });
+
+            // 4. Simpan ke Cache
+            setCached('questionBank', comics);
         }
         loading = false;
     });

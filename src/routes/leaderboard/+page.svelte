@@ -3,6 +3,7 @@
     import { supabase } from '$lib/supabaseClient';
     import { fade, fly, scale } from 'svelte/transition';
     import { Trophy, Flame, Crown, EyeOff, UserX } from 'lucide-svelte';
+    import { getCached, setCached } from '$lib/cache';
 
     const { profile, user, loadingProfile } = getContext('appState');
 
@@ -11,32 +12,37 @@
     let isLeaderboardActive = $state(true);
 
     onMount(async () => {
-        // --- 1. CEK STATUS SAKLAR ADMIN ---
-        const { data: settings } = await supabase
-            .from('app_settings')
-            .select('leaderboard_active')
-            .eq('id', 1)
-            .single();
-            
-        if (settings) {
-            isLeaderboardActive = settings.leaderboard_active;
-        }
-
-        if (!isLeaderboardActive) {
+        // 1. Cek Cache
+        const cached = getCached('leaderboard');
+        if (cached) {
+            isLeaderboardActive = cached.active;
+            leaderboardData = cached.data;
             loading = false;
             return;
         }
 
-        // --- 2. JIKA AKTIF: Ambil data Leaderboard ---
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('id, full_name, username, avatar_url, streak, class, level')
-            .order('streak', { ascending: false })
-            .limit(50);
+        loading = true;
 
-        if (data) {
-            leaderboardData = data;
+        // 2. Parallel Fetching dengan Specific Columns & Limit
+        const [settingsRes, leaderboardRes] = await Promise.all([
+            supabase.from('app_settings').select('leaderboard_active').eq('id', 1).single(),
+            supabase.from('profiles')
+                .select('id, full_name, username, avatar_url, streak, class, level')
+                .order('streak', { ascending: false })
+                .limit(50)
+        ]);
+
+        if (settingsRes.data) {
+            isLeaderboardActive = settingsRes.data.leaderboard_active;
         }
+
+        if (leaderboardRes.data) {
+            leaderboardData = leaderboardRes.data;
+        }
+
+        // 3. Simpan ke Cache
+        setCached('leaderboard', { active: isLeaderboardActive, data: leaderboardData });
+        
         loading = false;
     });
 </script>

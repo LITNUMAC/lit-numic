@@ -3,6 +3,7 @@
   import { supabase } from '$lib/supabaseClient';
   import { fade, fly, scale } from 'svelte/transition';
   import { Library, Flame } from 'lucide-svelte';
+  import { getCached, setCached } from '$lib/cache';
 
   const { profile, user, loadingProfile } = getContext('appState');
 
@@ -24,22 +25,44 @@
 
   async function fetchData() {
     if (!user) return;
+    
+    // 1. Cek Cache
+    const cachedData = getCached('dashboard');
+    if (cachedData) {
+        comics = cachedData.comics;
+        lastRead = cachedData.lastRead;
+        loading = false;
+        return;
+    }
+
     loading = true;
 
-    // 1. Ambil Komik & Progres
-    const { data: allComics } = await supabase.from('comics').select('*').eq('status', 'active').order('created_at', { ascending: false });
-    const { data: userProgress } = await supabase.from('student_progress').select('*').eq('user_id', user.id);
+    // 2. Parallel Fetching dengan Specific Columns
+    const [comicsRes, progressRes] = await Promise.all([
+        supabase.from('comics')
+            .select('id, title, cover_url, description, total_pages, status, created_at')
+            .eq('status', 'active')
+            .order('created_at', { ascending: false })
+            .limit(20),
+        supabase.from('student_progress')
+            .select('comic_id, is_completed, last_read_page, updated_at')
+            .eq('user_id', user.id)
+    ]);
+
+    const allComics = comicsRes.data;
+    const userProgress = progressRes.data;
 
     if (allComics) {
-      comics.unread = []; comics.completed = [];
+      const newComics = { unread: [], completed: [] };
       allComics.forEach(comic => {
         const prog = userProgress?.find(p => p.comic_id === comic.id);
-        if (prog && prog.is_completed) comics.completed.push(comic);
-        else comics.unread.push(comic);
+        if (prog && prog.is_completed) newComics.completed.push(comic);
+        else newComics.unread.push(comic);
       });
+      comics = newComics;
 
       if (userProgress && userProgress.length > 0) {
-        const sortedProgress = userProgress.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         const latest = sortedProgress[0];
         const lastComic = allComics.find(c => c.id === latest.comic_id);
 
@@ -59,6 +82,9 @@
             };
         }
       }
+
+      // 3. Simpan ke Cache
+      setCached('dashboard', { comics, lastRead });
     }
     loading = false;
   }

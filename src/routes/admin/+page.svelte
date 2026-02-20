@@ -7,6 +7,8 @@
     // 👇 TAMBAHAN WAJIB: Import Chart.js agar grafiknya bisa dirender
     import Chart from 'chart.js/auto'; 
 
+    import { getCached, setCached } from '$lib/cache';
+
     let stats = {
         totalUser: 0,
         totalKomik: 0,
@@ -23,33 +25,34 @@
     });
 
     async function fetchData() {
-        loading = true;
-        
-        // 1. Hitung Total Student
-        const { count: countUser } = await supabase
-            .from('profiles')
-            .select('*', { count: 'exact', head: true })
-            .eq('role', 'student');
-        
-        // 2. Hitung Total Komik
-        const { count: countKomik } = await supabase
-            .from('comics')
-            .select('*', { count: 'exact', head: true });
-
-        // 3. Hitung Total Kuis yang pernah dikerjakan
-        const { data: scores } = await supabase
-            .from('quiz_scores')
-            .select('score');
-
-        stats.totalUser = countUser || 0;
-        stats.totalKomik = countKomik || 0;
-        stats.totalKuis = scores?.length || 0;
-        
-        if (scores && scores.length > 0) {
-            const sum = scores.reduce((a, b) => a + b.score, 0);
-            stats.rataRataNilai = Math.round(sum / scores.length);
+        // 1. Cek Cache
+        const cached = getCached('adminStats');
+        if (cached) {
+            stats = cached;
+            loading = false;
+            return;
         }
 
+        loading = true;
+        
+        // 2. Parallel Fetching
+        const [userRes, komikRes, quizRes] = await Promise.all([
+            supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'student'),
+            supabase.from('comics').select('id', { count: 'exact', head: true }),
+            supabase.from('quiz_scores').select('score')
+        ]);
+
+        stats.totalUser = userRes.count || 0;
+        stats.totalKomik = komikRes.count || 0;
+        stats.totalKuis = quizRes.data?.length || 0;
+        
+        if (quizRes.data && quizRes.data.length > 0) {
+            const sum = quizRes.data.reduce((a, b) => a + b.score, 0);
+            stats.rataRataNilai = Math.round(sum / quizRes.data.length);
+        }
+
+        // 3. Simpan ke Cache
+        setCached('adminStats', stats);
         loading = false;
     }
 

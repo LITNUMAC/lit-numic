@@ -3,6 +3,7 @@
     import { supabase } from '$lib/supabaseClient';
     import { fly } from 'svelte/transition';
     import Chart from 'chart.js/auto';
+    import { getCached, setCached } from '$lib/cache';
 
     let loading = true;
     let quizData = [];
@@ -15,13 +16,27 @@
     });
 
     async function fetchData() {
+        // 1. Cek Cache
+        const cached = getCached('adminStats_detail');
+        if (cached) {
+            quizData = cached;
+            loading = false;
+            return;
+        }
+
         loading = true;
-        // Ambil data skor kuis lengkap dengan nama komik & siswa
+        // 2. Fetch dengan Specific Columns & Limit
         const { data, error } = await supabase
             .from('quiz_scores')
-            .select('score, created_at, comics(title), profiles(full_name)');
+            .select('score, created_at, comics(title), profiles(full_name)')
+            .order('created_at', { ascending: false })
+            .limit(50);
         
-        if (!error) quizData = data;
+        if (!error) {
+            quizData = data;
+            // 3. Simpan ke Cache
+            setCached('adminStats_detail', data);
+        }
         loading = false;
     }
 

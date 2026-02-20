@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { supabase } from '$lib/supabaseClient';
     import { fly, fade } from 'svelte/transition';
+    import { getCached, setCached } from '$lib/cache';
 
     let users = [];
     let searchQuery = '';
@@ -12,14 +13,29 @@
     });
 
     async function fetchUsers() {
+        // 1. Cek Cache
+        const cached = getCached('users');
+        if (cached && searchQuery === '') {
+            users = cached;
+            loading = false;
+            return;
+        }
+
         loading = true;
-        // Ambil data dari tabel profiles
+        // 2. Fetch dengan Specific Columns & Limit
         const { data, error } = await supabase
             .from('profiles')
-            .select('*')
-            .order('created_at', { ascending: false });
+            .select('id, full_name, email, role, created_at')
+            .order('created_at', { ascending: false })
+            .limit(20);
 
-        if (!error) users = data;
+        if (!error) {
+            users = data;
+            // 3. Simpan ke Cache jika ini query default
+            if (searchQuery === '') {
+                setCached('users', data);
+            }
+        }
         loading = false;
     }
 
