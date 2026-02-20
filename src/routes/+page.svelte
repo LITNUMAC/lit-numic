@@ -2,8 +2,19 @@
   import { fade, fly, slide } from 'svelte/transition';
   import { reveal } from '$lib/actions/reveal';
   import { Lock, Shuffle, CheckCircle, Smartphone, Rocket, Menu, X } from 'lucide-svelte';
+  import { getContext } from 'svelte';
+  
+  const { profile, user, loadingProfile } = getContext('appState');
 
   let isMobileMenuOpen = $state(false);
+  let isScrolled = $state(false);
+
+  // Scroll detection for transparent-to-solid navbar
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', () => {
+      isScrolled = window.scrollY > 20;
+    });
+  }
 </script>
 
 <svelte:head>
@@ -14,7 +25,57 @@
 
 <div class="min-h-screen font-poppins bg-white text-slate-800">
 
-  <!-- Global layout now provides navigation -->
+  <!-- Dedicated Landing Navbar -->
+  <nav class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 {isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <h1 class="text-2xl font-bold text-blue-800 font-fredoka">LIT-NUMIC<span class="text-yellow-400">.</span></h1>
+      </div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#home" class="text-sm font-bold text-gray-600 hover:text-blue-600 transition-colors">Home</a>
+        <a href="#fitur" class="text-sm font-bold text-gray-600 hover:text-blue-600 transition-colors">Fitur</a>
+        <a href="#cara-kerja" class="text-sm font-bold text-gray-600 hover:text-blue-600 transition-colors">Cara Kerja</a>
+        
+        <div class="h-6 w-px bg-gray-200"></div>
+
+        {#if user}
+          <a href="/dashboard" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all text-xs">
+            DASHBOARD
+          </a>
+        {:else}
+          <div class="flex items-center gap-4">
+            <a href="/login" class="text-sm font-bold text-blue-600 hover:text-blue-700">LOGIN</a>
+            <a href="/register" class="px-6 py-2.5 bg-yellow-400 text-blue-900 font-bold rounded-xl shadow-lg shadow-yellow-100 hover:bg-yellow-500 hover:scale-105 active:scale-95 transition-all text-xs">
+              DAFTAR
+            </a>
+          </div>
+        {/if}
+      </div>
+
+      <!-- Mobile Toggle -->
+      <button class="md:hidden p-2 text-gray-600" onclick={() => isMobileMenuOpen = !isMobileMenuOpen}>
+        {#if isMobileMenuOpen} <X size={24} /> {:else} <Menu size={24} /> {/if}
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    {#if isMobileMenuOpen}
+      <div class="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 p-6 flex flex-col gap-4 shadow-xl" transition:slide>
+        <a href="#home" onclick={() => isMobileMenuOpen = false} class="text-lg font-bold text-gray-800">Home</a>
+        <a href="#fitur" onclick={() => isMobileMenuOpen = false} class="text-lg font-bold text-gray-800">Fitur</a>
+        <a href="#cara-kerja" onclick={() => isMobileMenuOpen = false} class="text-lg font-bold text-gray-800">Cara Kerja</a>
+        <hr class="border-gray-50">
+        {#if user}
+          <a href="/dashboard" class="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl text-center">DASHBOARD</a>
+        {:else}
+          <a href="/login" class="w-full py-4 text-center font-bold text-blue-600 border border-blue-100 rounded-2xl">LOGIN</a>
+          <a href="/register" class="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-center shadow-lg shadow-yellow-100">DAFTAR</a>
+        {/if}
+      </div>
+    {/if}
+  </nav>
 
   <section id="home" class="pt-32 pb-20 px-6 bg-gradient-to-b from-blue-50 to-white relative overflow-hidden">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

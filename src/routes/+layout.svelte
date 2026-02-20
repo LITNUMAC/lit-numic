@@ -98,7 +98,7 @@
     {/if}
 
     <!-- Sidebar (Shared Global) -->
-    {#if !isReaderOrQuiz}
+    {#if isAppRoute && !isReaderOrQuiz}
       <aside class="fixed inset-y-0 left-0 bg-white z-[70] w-72 border-r border-gray-100 p-6 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 
         {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:m-4 lg:rounded-[2.5rem] lg:h-[calc(100vh-2rem)] lg:shadow-xl lg:shadow-blue-900/5">
         
@@ -165,7 +165,7 @@
     <div class="flex-1 flex flex-col min-w-0 h-full relative">
       
       <!-- Global Header -->
-      {#if !isReaderOrQuiz}
+      {#if isAppRoute && !isReaderOrQuiz}
         <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center shrink-0 z-[50] sticky top-0 px-4 md:px-8">
             <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
                 <div class="flex items-center gap-4">
