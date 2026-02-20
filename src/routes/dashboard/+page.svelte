@@ -37,8 +37,8 @@
 
     loading = true;
 
-    // 2. Parallel Fetching dengan Specific Columns
-    const [comicsRes, progressRes] = await Promise.all([
+    // 2. Parallel Fetching (Comics, Progress, and Profile)
+    const [comicsRes, progressRes, profileRes] = await Promise.all([
         supabase.from('comics')
             .select('id, title, cover_url, description, total_pages, status, created_at')
             .eq('status', 'active')
@@ -46,11 +46,19 @@
             .limit(20),
         supabase.from('student_progress')
             .select('comic_id, is_completed, last_read_page, updated_at')
-            .eq('user_id', user.id)
+            .eq('user_id', user.id),
+        supabase.from('profiles')
+            .select('id, avatar_url, full_name, streak') // Ditambahkan full_name & streak agar UI tidak pecah
+            .eq('id', user.id)
+            .single()
     ]);
+
+    // Set loading false SEGERA setelah Promise.all selesai
+    loading = false;
 
     const allComics = comicsRes.data;
     const userProgress = progressRes.data;
+    const profileData = profileRes.data;
 
     if (allComics) {
       const newComics = { unread: [], completed: [] };
@@ -86,7 +94,6 @@
       // 3. Simpan ke Cache
       setCached('dashboard', { comics, lastRead });
     }
-    loading = false;
   }
 
   onMount(() => { 
