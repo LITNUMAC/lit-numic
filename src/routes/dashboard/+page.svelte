@@ -31,68 +31,74 @@
     if (cachedData) {
         comics = cachedData.comics;
         lastRead = cachedData.lastRead;
-        loading = false;
+        loading = false; // Pastikan loading false jika dari cache
         return;
     }
 
     loading = true;
 
-    // 2. Parallel Fetching (Comics, Progress, and Profile)
-    const [comicsRes, progressRes, profileRes] = await Promise.all([
-        supabase.from('comics')
-            .select('id, title, cover_url, description, total_pages, status, created_at')
-            .eq('status', 'active')
-            .order('created_at', { ascending: false })
-            .limit(20),
-        supabase.from('student_progress')
-            .select('comic_id, is_completed, last_read_page, updated_at')
-            .eq('user_id', user.id),
-        supabase.from('profiles')
-            .select('id, avatar_url, full_name, streak') // Ditambahkan full_name & streak agar UI tidak pecah
-            .eq('id', user.id)
-            .single()
-    ]);
+    try {
+        // 2. Parallel Fetching (Comics, Progress, and Profile)
+        const [comicsRes, progressRes, profileRes] = await Promise.all([
+            supabase.from('comics')
+                .select('id, title, cover_url, description, total_pages, status, created_at')
+                .eq('status', 'active')
+                .order('created_at', { ascending: false })
+                .limit(20),
+            supabase.from('student_progress')
+                .select('comic_id, is_completed, last_read_page, updated_at')
+                .eq('user_id', user.id),
+            supabase.from('profiles')
+                .select('id, avatar_url, full_name, streak')
+                .eq('id', user.id)
+                .single()
+        ]);
 
-    // Set loading false SEGERA setelah Promise.all selesai
-    loading = false;
+        console.log("Data berhasil dimuat");
 
-    const allComics = comicsRes.data;
-    const userProgress = progressRes.data;
-    const profileData = profileRes.data;
+        const allComics = comicsRes.data;
+        const userProgress = progressRes.data;
+        // profileData handle via appState context but we fetch for consistency in selective query
 
-    if (allComics) {
-      const newComics = { unread: [], completed: [] };
-      allComics.forEach(comic => {
-        const prog = userProgress?.find(p => p.comic_id === comic.id);
-        if (prog && prog.is_completed) newComics.completed.push(comic);
-        else newComics.unread.push(comic);
-      });
-      comics = newComics;
+        if (allComics) {
+            const newComics = { unread: [], completed: [] };
+            allComics.forEach(comic => {
+                const prog = userProgress?.find(p => p.comic_id === comic.id);
+                if (prog && prog.is_completed) newComics.completed.push(comic);
+                else newComics.unread.push(comic);
+            });
+            comics = newComics;
 
-      if (userProgress && userProgress.length > 0) {
-        const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-        const latest = sortedProgress[0];
-        const lastComic = allComics.find(c => c.id === latest.comic_id);
+            if (userProgress && userProgress.length > 0) {
+                const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                const latest = sortedProgress[0];
+                const lastComic = allComics.find(c => c.id === latest.comic_id);
 
-        if (lastComic) {
-            let totalPages = lastComic.total_pages || 20; 
-            const currentPage = latest.last_read_page || 1;
-            if (currentPage > totalPages) totalPages = currentPage;
-            const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
+                if (lastComic) {
+                    let totalPages = lastComic.total_pages || 20; 
+                    const currentPage = latest.last_read_page || 1;
+                    if (currentPage > totalPages) totalPages = currentPage;
+                    const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
 
-            lastRead = { 
-                title: lastComic.title, 
-                id: lastComic.id, 
-                page: currentPage,
-                totalPages: totalPages,
-                progressPercent: percent,
-                cover_url: lastComic.cover_url
-            };
+                    lastRead = { 
+                        title: lastComic.title, 
+                        id: lastComic.id, 
+                        page: currentPage,
+                        totalPages: totalPages,
+                        progressPercent: percent,
+                        cover_url: lastComic.cover_url
+                    };
+                }
+            }
+
+            // 3. Simpan ke Cache
+            setCached('dashboard', { comics, lastRead });
         }
-      }
-
-      // 3. Simpan ke Cache
-      setCached('dashboard', { comics, lastRead });
+    } catch (error) {
+        console.error("Gagal memuat data dashboard:", error);
+    } finally {
+        // Set loading false SEGERA & WAJIB di dalam finally
+        loading = false;
     }
   }
 
@@ -108,9 +114,59 @@
 
 <div in:fade>
     {#if loading || loadingProfile}
-        <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-            Memuat data dashboard...
+        <!-- DASHBOARD SKELETON SCREEN -->
+        <div class="flex flex-col gap-10" in:fade>
+            <!-- Header Skeleton -->
+            <div class="space-y-3">
+                <div class="h-10 w-64 bg-gray-200 rounded-2xl animate-pulse"></div>
+                <div class="h-4 w-48 bg-gray-100 rounded-xl animate-pulse"></div>
+            </div>
+
+            <!-- Stats Skeleton -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {#each Array(3) as _}
+                    <div class="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center gap-4 animate-pulse">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full"></div>
+                        <div class="h-8 w-16 bg-gray-200 rounded-xl"></div>
+                        <div class="h-3 w-24 bg-gray-100 rounded-lg"></div>
+                    </div>
+                {/each}
+            </div>
+
+            <!-- Hero Skeleton -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Large Card Skeleton -->
+                <div class="lg:col-span-2 h-64 bg-gray-200 rounded-[2.5rem] animate-pulse relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+                    <div class="p-8 space-y-4">
+                        <div class="h-6 w-32 bg-gray-300 rounded-lg"></div>
+                        <div class="h-10 w-3/4 bg-gray-300 rounded-xl"></div>
+                        <div class="h-4 w-1/2 bg-gray-300 rounded-lg"></div>
+                    </div>
+                </div>
+                <!-- Small Card Skeleton -->
+                <div class="h-64 bg-white border border-gray-100 rounded-[2.5rem] p-8 flex flex-col items-center justify-between animate-pulse">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full"></div>
+                    <div class="h-4 w-32 bg-gray-200 rounded-lg"></div>
+                    <div class="w-full h-8 bg-gray-100 rounded-full"></div>
+                    <div class="h-8 w-3/4 bg-gray-100 rounded-2xl"></div>
+                </div>
+            </div>
+
+            <!-- Grid Skeleton -->
+            <div class="space-y-8">
+                <div class="h-8 w-48 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {#each Array(3) as _}
+                        <div class="bg-white rounded-[2.5rem] p-6 border border-gray-100 space-y-4 animate-pulse">
+                            <div class="h-56 bg-gray-100 rounded-[2rem]"></div>
+                            <div class="h-6 w-3/4 bg-gray-200 rounded-lg"></div>
+                            <div class="h-4 w-full bg-gray-100 rounded-lg"></div>
+                            <div class="h-12 w-full bg-gray-200 rounded-2xl"></div>
+                        </div>
+                    {/each}
+                </div>
+            </div>
         </div>
     {:else}
         <div class="mb-10">
@@ -249,3 +305,24 @@
         </div>
     {/if}
 </div>
+
+<style>
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  .font-fredoka { font-family: 'Fredoka', sans-serif; }
+  .font-poppins { font-family: 'Poppins', sans-serif; }
+  
+  /* Prevent scroll jumping when layout is fixed */
+  :global(html) {
+      scrollbar-gutter: stable;
+  }
+
+  /* Shimmer Animation for Skeleton */
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+</style>
+```
