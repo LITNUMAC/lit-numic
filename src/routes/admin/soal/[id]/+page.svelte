@@ -105,8 +105,9 @@
     </div>
 
     {#if loading}
-        <div class="flex justify-center py-20">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            Memuat detail soal...
         </div>
     {:else}
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8">
@@ -129,7 +130,7 @@
 
                     {#if form.question_type === 'pilihan_ganda'}
                         <div class="space-y-3" in:fade>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pilihan Jawaban</label>
+                            <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pilihan Jawaban</span>
                             <div class="flex items-center gap-3">
                                 <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">A</span>
                                 <input id="option_a" bind:value={form.option_a} type="text" class="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Pilihan A" required>
@@ -173,8 +174,8 @@
                                 <p class="text-[10px] text-gray-400 mt-1">*Siswa harus mengetik jawaban persis seperti ini agar dianggap benar.</p>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tag (Opsional)</label>
-                                <input bind:value={form.tags} type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Cth: Aljabar">
+                                <label for="tags_isian" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tag (Opsional)</label>
+                                <input id="tags_isian" bind:value={form.tags} type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Cth: Aljabar">
                             </div>
                         </div>
                     {/if}

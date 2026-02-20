@@ -13,7 +13,7 @@
   ];
 </script>
 
-<div class="flex flex-row gap-8" in:fade>
+<div class="flex flex-col lg:flex-row items-start gap-8" in:fade>
   
   <!-- Sub-Sidebar Pengaturan -->
   <aside class="w-full lg:w-72 flex-shrink-0">

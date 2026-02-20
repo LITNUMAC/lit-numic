@@ -81,7 +81,10 @@
     </div>
 
     {#if loading}
-        <p>Menghitung data...</p>
+        <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            Memuat data statistik...
+        </div>
     {:else}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
             <div class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">

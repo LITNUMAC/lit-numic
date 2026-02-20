@@ -98,8 +98,9 @@
     <h2 class="text-2xl font-bold text-blue-900 mb-6 font-poppins">Ringkasan Dashboard</h2>
 
     {#if loading}
-        <div class="flex justify-center py-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            Memuat data dashboard...
         </div>
     {:else}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -127,25 +128,25 @@
                 <span class="text-5xl font-black text-purple-500 font-fredoka">{stats.rataRataNilai}</span>
             </div>
         </div>
+
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Tren Aktivitas Belajar</h3>
+                    <p class="text-sm text-gray-400">Jumlah pengerjaan kuis dalam 7 hari terakhir</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-widest">Minggu Ini</span>
+                </div>
+            </div>
+
+            <div class="h-[300px] w-full">
+                <canvas bind:this={canvasElement}></canvas>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-50 flex justify-center">
+                <p class="text-xs text-blue-400 italic">Data otomatis diperbarui setiap ada siswa yang menyelesaikan kuis.</p>
+            </div>
+        </div>
     {/if}
-
-    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h3 class="text-xl font-bold text-gray-800">Tren Aktivitas Belajar</h3>
-                <p class="text-sm text-gray-400">Jumlah pengerjaan kuis dalam 7 hari terakhir</p>
-            </div>
-            <div class="flex gap-2">
-                <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-widest">Minggu Ini</span>
-            </div>
-        </div>
-
-        <div class="h-[300px] w-full">
-            <canvas bind:this={canvasElement}></canvas>
-        </div>
-        
-        <div class="mt-6 pt-6 border-t border-gray-50 flex justify-center">
-            <p class="text-xs text-blue-400 italic">Data otomatis diperbarui setiap ada siswa yang menyelesaikan kuis.</p>
-        </div>
-    </div>
 </div>

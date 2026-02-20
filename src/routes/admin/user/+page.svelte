@@ -58,28 +58,29 @@
 </script>
 
 <div in:fly={{ y: 20, duration: 500 }}>
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-            <h2 class="text-2xl font-bold text-blue-900 font-poppins">Manajemen Pengguna</h2>
-            <p class="text-gray-500 text-sm">Pantau dan atur hak akses akun siswa atau admin.</p>
-        </div>
-        
-        <div class="relative w-64">
-            <input 
-                type="text" 
-                bind:value={searchQuery}
-                placeholder="Cari nama atau email..." 
-                class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all shadow-sm"
-            />
-            <span class="absolute left-3 top-2.5 opacity-30">🔍</span>
-        </div>
-    </div>
-
     {#if loading}
-        <div class="flex justify-center py-20">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            Memuat data pengguna...
         </div>
     {:else}
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-blue-900 font-poppins">Manajemen Pengguna</h2>
+                <p class="text-gray-500 text-sm">Pantau dan atur hak akses akun siswa atau admin.</p>
+            </div>
+            
+            <div class="relative w-64">
+                <input 
+                    type="text" 
+                    bind:value={searchQuery}
+                    placeholder="Cari nama atau email..." 
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all shadow-sm"
+                />
+                <span class="absolute left-3 top-2.5 opacity-30">🔍</span>
+            </div>
+        </div>
+
         <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
