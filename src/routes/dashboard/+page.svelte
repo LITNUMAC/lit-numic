@@ -18,6 +18,11 @@
       cover_url: "" 
   });
 
+  // Explicit stats variables for UI mapping
+  let totalKoleksi = $state(0);
+  let sedangDibaca = $state(0);
+  let sudahSelesai = $state(0);
+
   async function updateStreakInDB(userId, newStreak) {
     try {
         const today = new Date().toISOString();
@@ -40,6 +45,11 @@
     if (cachedData) {
         comics = cachedData.comics || { unread: [], completed: [] };
         lastRead = cachedData.lastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
+        if (cachedData.stats) {
+            totalKoleksi = cachedData.stats.totalKoleksi || 0;
+            sedangDibaca = cachedData.stats.sedangDibaca || 0;
+            sudahSelesai = cachedData.stats.sudahSelesai || 0;
+        }
         loading = false; 
         console.log("Dashboard unlocked via cache hit");
     }
@@ -123,8 +133,15 @@
                 sudahSelesai: newComics.completed.length 
             });
 
+            // Direct assignment to state variables to force UI update
+            totalKoleksi = allComics.length;
+            sedangDibaca = foundLastRead ? 1 : 0;
+            sudahSelesai = newComics.completed.length;
+
+            console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
+
             // 4. Update Cache
-            setCached('dashboard', { comics, lastRead });
+            setCached('dashboard', { comics, lastRead, stats: { totalKoleksi, sedangDibaca, sudahSelesai } });
         } else {
             console.error("Comics fetch error:", comicsResult.reason);
         }
@@ -225,7 +242,7 @@
                     <div class="mb-3 p-3 bg-yellow-50 rounded-full group-hover:bg-yellow-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{(comics?.unread?.length || 0) + (comics?.completed?.length || 0)}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{totalKoleksi}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Koleksi</div>
                 </div>
 
@@ -233,7 +250,7 @@
                     <div class="mb-3 p-3 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{lastRead?.id ? 1 : 0}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{sedangDibaca}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sedang Dibaca</div>
                 </div>
 
@@ -241,7 +258,7 @@
                     <div class="mb-3 p-3 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{comics?.completed?.length || 0}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{sudahSelesai}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sudah Selesai</div>
                 </div>
             </div>
