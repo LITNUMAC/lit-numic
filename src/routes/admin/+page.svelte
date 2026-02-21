@@ -4,10 +4,8 @@
     import { fly, fade } from 'svelte/transition';
     import { Users, Library, CheckCircle, TrendingUp } from 'lucide-svelte';
     
-    // 👇 TAMBAHAN WAJIB: Import Chart.js agar grafiknya bisa dirender
     import Chart from 'chart.js/auto'; 
-
-    import { getCached, setCached } from '$lib/cache';
+    // Cache disabled — always fetch fresh data so chart reflects real database state
 
     let stats = {
         totalUser: 0,
@@ -19,47 +17,67 @@
     let canvasElement; // Referensi untuk grafik
     let chartInstance = null; // Untuk menyimpan data grafik agar tidak menumpuk
 
+    // Chart data — initialized with zeros, populated from Supabase
+    let chartLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    let chartData = [0, 0, 0, 0, 0, 0, 0];
+
     onMount(async () => {
         await fetchData();
-        renderChart();
+        renderChart(chartData);
     });
 
     async function fetchData() {
-        // 1. Cek Cache
-        const cached = getCached('adminStats');
-        if (cached) {
-            stats = cached;
-            loading = false;
-            return;
-        }
-
         loading = true;
-        
-        // 2. Parallel Fetching
-        const [userRes, komikRes, quizRes] = await Promise.all([
+
+        // Last 7 days date boundary
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        console.log('Admin: Fetching fresh data from Supabase...');
+
+        const [userRes, komikRes, quizRes, activityRes] = await Promise.all([
             supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'student'),
             supabase.from('comics').select('id', { count: 'exact', head: true }),
-            supabase.from('quiz_scores').select('score')
+            supabase.from('quiz_scores').select('score'),
+            supabase.from('quiz_scores')
+                .select('created_at')
+                .gte('created_at', sevenDaysAgo.toISOString())
         ]);
+
+        console.log('Admin quiz_scores raw:', quizRes.data, quizRes.error);
+        console.log('Admin activity raw (7d):', activityRes.data, activityRes.error);
 
         stats.totalUser = userRes.count || 0;
         stats.totalKomik = komikRes.count || 0;
         stats.totalKuis = quizRes.data?.length || 0;
-        
+        stats.rataRataNilai = 0;
+
         if (quizRes.data && quizRes.data.length > 0) {
             const sum = quizRes.data.reduce((a, b) => a + b.score, 0);
             stats.rataRataNilai = Math.round(sum / quizRes.data.length);
         }
 
-        // 3. Simpan ke Cache
-        setCached('adminStats', stats);
+        // Build chart data grouped by day-of-week (Mon=0 ... Sun=6)
+        const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+        if (activityRes.data && activityRes.data.length > 0) {
+            activityRes.data.forEach(row => {
+                const d = new Date(row.created_at);
+                const monFirstIndex = (d.getDay() + 6) % 7;
+                dayCounts[monFirstIndex]++;
+            });
+        }
+        chartData = dayCounts;
+        console.log('Chart data final (Mon-Sun):', chartData);
+
         loading = false;
     }
 
-    function renderChart() {
+    function renderChart(data = [0, 0, 0, 0, 0, 0, 0]) {
         if (!canvasElement) return;
 
-        // 👇 TAMBAHAN WAJIB: Hancurkan grafik lama sebelum membuat yang baru (mencegah bug visual)
+        // Hancurkan grafik lama sebelum membuat yang baru
         if (chartInstance) {
             chartInstance.destroy();
         }
@@ -67,10 +85,10 @@
         chartInstance = new Chart(canvasElement, {
             type: 'line',
             data: {
-                labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                labels: chartLabels,
                 datasets: [{
                     label: 'Aktivitas Belajar',
-                    data: [12, 19, 15, 25, 22, 30, 45], // Data contoh UI
+                    data: data, // Real-time data from Supabase
                     borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     fill: true,
