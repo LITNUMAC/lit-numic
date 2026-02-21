@@ -28,6 +28,7 @@
   }
 
   async function fetchData() {
+    console.log('fetchData started...');
     if (!user) {
         console.log("No user found, cancelling fetch and clearing loading");
         loading = false;
@@ -41,25 +42,24 @@
         lastRead = cachedData.lastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
         loading = false; 
         console.log("Dashboard unlocked via cache hit");
-        // We still fetch in background to refresh cache/UI
     }
 
     try {
-        // 2. Critical Path: Fetch Profile first to unlock major UI elements
-        console.log("Fetching critical profile data...");
+        // 2. Critical Path: Fetch Profile first
+        console.log("Fetching profile from Supabase...");
         const { data: profileData, error: profileError } = await supabase.from('profiles')
             .select('id, avatar_url, full_name, streak')
             .eq('id', user.id)
             .single();
         
-        if (profileError) console.warn("Profile fetch error:", profileError);
+        console.log('Hasil Supabase (Profile):', profileData);
+        if (profileError) console.error("Profile fetch error:", profileError);
         
-        // Unlock UI frame even if profile fetch fails or is slow
-        console.log("Profile data checkpoint reached, unlocking UI frame");
         loading = false; 
+        console.log("UI unlocked after profile attempt");
 
-        // 3. Secondary Path: Comics and Progress (Background)
-        console.log("Fetching secondary dashboard data (comics, progress)...");
+        // 3. Secondary Path
+        console.log("Fetching comics and progress...");
         const [comicsResult, progressResult] = await Promise.allSettled([
             supabase.from('comics')
                 .select('id, title, cover_url, description, total_pages, status, created_at')
@@ -71,61 +71,74 @@
                 .eq('user_id', user.id)
         ]);
 
-        const comicsRes = comicsResult.status === 'fulfilled' ? comicsResult.value : { data: [] };
-        const progressRes = progressResult.status === 'fulfilled' ? progressResult.value : { data: [] };
-
-        const allComics = comicsRes.data || [];
-        const userProgress = progressRes.data || [];
-
-        // Map comics and progress
-        const newComics = { unread: [], completed: [] };
-        allComics.forEach(comic => {
-            const prog = userProgress.find(p => p.comic_id === comic.id);
-            if (prog && prog.is_completed) newComics.completed.push(comic);
-            else newComics.unread.push(comic);
-        });
-        comics = newComics;
-
-        // Determine last read
-        if (userProgress.length > 0) {
-            const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-            const latest = sortedProgress[0];
-            const lastComic = allComics.find(c => c.id === latest.comic_id);
-
-            if (lastComic) {
-                let totalPages = lastComic.total_pages || 20; 
-                const currentPage = latest.last_read_page || 1;
-                if (currentPage > totalPages) totalPages = currentPage;
-                const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
-
-                lastRead = { 
-                    title: lastComic.title, 
-                    id: lastComic.id, 
-                    page: currentPage,
-                    totalPages: totalPages,
-                    progressPercent: percent,
-                    cover_url: lastComic.cover_url
-                };
+        if (comicsResult.status === 'fulfilled') {
+            console.log('Hasil Supabase (Comics):', comicsResult.value.data?.length, 'items');
+            const comicsRes = comicsResult.value;
+            const allComics = comicsRes.data || [];
+            
+            let userProgress = [];
+            if (progressResult.status === 'fulfilled') {
+                console.log('Hasil Supabase (Progress):', progressResult.value.data?.length, 'items');
+                userProgress = progressResult.value.data || [];
+            } else {
+                console.error("Progress fetch error:", progressResult.reason);
             }
-        }
 
-        // 4. Update Cache
-        setCached('dashboard', { comics, lastRead });
-        console.log("Background data fetch complete");
+            // Map comics and progress
+            const newComics = { unread: [], completed: [] };
+            allComics.forEach(comic => {
+                const prog = userProgress.find(p => p.comic_id === comic.id);
+                if (prog && prog.is_completed) newComics.completed.push(comic);
+                else newComics.unread.push(comic);
+            });
+            comics = newComics;
+
+            // Determine last read
+            if (userProgress.length > 0) {
+                const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                const latest = sortedProgress[0];
+                const lastComic = allComics.find(c => c.id === latest.comic_id);
+
+                if (lastComic) {
+                    let totalPages = lastComic.total_pages || 20; 
+                    const currentPage = latest.last_read_page || 1;
+                    if (currentPage > totalPages) totalPages = currentPage;
+                    const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
+
+                    lastRead = { 
+                        title: lastComic.title, 
+                        id: lastComic.id, 
+                        page: currentPage,
+                        totalPages: totalPages,
+                        progressPercent: percent,
+                        cover_url: lastComic.cover_url
+                    };
+                }
+            }
+            // 4. Update Cache
+            setCached('dashboard', { comics, lastRead });
+        } else {
+            console.error("Comics fetch error:", comicsResult.reason);
+        }
 
     } catch (error) {
         console.error("Dashboard fetch crash:", error);
     } finally {
-        // Absolute safety: ensure loading is false
-        if (loading) {
-            console.log("Final safety check: unlocking UI");
-            loading = false;
-        }
+        console.log("fetchData finally block: forcing loading to false");
+        loading = false;
     }
   }
 
-  onMount(async () => { 
-    if (user) await fetchData(); 
+  onMount(async () => {
+    console.log('onMount jalan...');
+    try {
+        if (user) await fetchData();
+    } catch (e) {
+        console.error('Error di onMount dashboard:', e);
+    } finally {
+        console.log('Safety valve: forcing loading = false at end of onMount');
+        loading = false;
+    }
   });
 
   // Re-fetch if user becomes available
@@ -337,7 +350,7 @@
     overflow-x: hidden;
   }
   .font-fredoka { font-family: 'Fredoka', sans-serif; }
-  .font-poppins { font-family: 'Poppins', sans-serif; }
+
   
   /* Prevent scroll jumping when layout is fixed */
   :global(html) {
