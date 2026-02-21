@@ -34,21 +34,33 @@
         return;
     }
     
-    // 1. Cek Cache
+    // 1. Check Cache
     const cachedData = getCached('dashboard');
     if (cachedData) {
         comics = cachedData.comics || { unread: [], completed: [] };
         lastRead = cachedData.lastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
         loading = false; 
-        console.log("Dashboard loaded from cache");
-        return;
+        console.log("Dashboard unlocked via cache hit");
+        // We still fetch in background to refresh cache/UI
     }
 
-    loading = true;
-
     try {
-        // 2. Parallel Fetching (Comics, Progress, and Profile)
-        const [comicsRes, progressRes, profileRes] = await Promise.all([
+        // 2. Critical Path: Fetch Profile first to unlock major UI elements
+        console.log("Fetching critical profile data...");
+        const { data: profileData, error: profileError } = await supabase.from('profiles')
+            .select('id, avatar_url, full_name, streak')
+            .eq('id', user.id)
+            .single();
+        
+        if (profileError) console.warn("Profile fetch error:", profileError);
+        
+        // Unlock UI frame even if profile fetch fails or is slow
+        console.log("Profile data checkpoint reached, unlocking UI frame");
+        loading = false; 
+
+        // 3. Secondary Path: Comics and Progress (Background)
+        console.log("Fetching secondary dashboard data (comics, progress)...");
+        const [comicsResult, progressResult] = await Promise.allSettled([
             supabase.from('comics')
                 .select('id, title, cover_url, description, total_pages, status, created_at')
                 .eq('status', 'active')
@@ -56,57 +68,59 @@
                 .limit(20),
             supabase.from('student_progress')
                 .select('comic_id, is_completed, last_read_page, updated_at')
-                .eq('user_id', user.id),
-            supabase.from('profiles')
-                .select('id, avatar_url, full_name, streak')
-                .eq('id', user.id)
-                .single()
+                .eq('user_id', user.id)
         ]);
 
-        console.log("Data berhasil dimuat dari Supabase");
+        const comicsRes = comicsResult.status === 'fulfilled' ? comicsResult.value : { data: [] };
+        const progressRes = progressResult.status === 'fulfilled' ? progressResult.value : { data: [] };
 
         const allComics = comicsRes.data || [];
         const userProgress = progressRes.data || [];
 
-        if (allComics.length > 0) {
-            const newComics = { unread: [], completed: [] };
-            allComics.forEach(comic => {
-                const prog = userProgress.find(p => p.comic_id === comic.id);
-                if (prog && prog.is_completed) newComics.completed.push(comic);
-                else newComics.unread.push(comic);
-            });
-            comics = newComics;
+        // Map comics and progress
+        const newComics = { unread: [], completed: [] };
+        allComics.forEach(comic => {
+            const prog = userProgress.find(p => p.comic_id === comic.id);
+            if (prog && prog.is_completed) newComics.completed.push(comic);
+            else newComics.unread.push(comic);
+        });
+        comics = newComics;
 
-            if (userProgress.length > 0) {
-                const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-                const latest = sortedProgress[0];
-                const lastComic = allComics.find(c => c.id === latest.comic_id);
+        // Determine last read
+        if (userProgress.length > 0) {
+            const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            const latest = sortedProgress[0];
+            const lastComic = allComics.find(c => c.id === latest.comic_id);
 
-                if (lastComic) {
-                    let totalPages = lastComic.total_pages || 20; 
-                    const currentPage = latest.last_read_page || 1;
-                    if (currentPage > totalPages) totalPages = currentPage;
-                    const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
+            if (lastComic) {
+                let totalPages = lastComic.total_pages || 20; 
+                const currentPage = latest.last_read_page || 1;
+                if (currentPage > totalPages) totalPages = currentPage;
+                const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
 
-                    lastRead = { 
-                        title: lastComic.title, 
-                        id: lastComic.id, 
-                        page: currentPage,
-                        totalPages: totalPages,
-                        progressPercent: percent,
-                        cover_url: lastComic.cover_url
-                    };
-                }
+                lastRead = { 
+                    title: lastComic.title, 
+                    id: lastComic.id, 
+                    page: currentPage,
+                    totalPages: totalPages,
+                    progressPercent: percent,
+                    cover_url: lastComic.cover_url
+                };
             }
-
-            // 3. Simpan ke Cache
-            setCached('dashboard', { comics, lastRead });
         }
+
+        // 4. Update Cache
+        setCached('dashboard', { comics, lastRead });
+        console.log("Background data fetch complete");
+
     } catch (error) {
-        console.error("Gagal memuat data dashboard:", error);
+        console.error("Dashboard fetch crash:", error);
     } finally {
-        console.log('Fetching Complete, setting loading to false');
-        loading = false;
+        // Absolute safety: ensure loading is false
+        if (loading) {
+            console.log("Final safety check: unlocking UI");
+            loading = false;
+        }
     }
   }
 
@@ -178,7 +192,7 @@
         </div>
     {:else}
         <div class="mb-10">
-            <h2 class="text-3xl font-bold text-blue-900 font-fredoka">Halo, {profile?.full_name || user?.email?.split('@')[0]}! </h2>
+            <h2 class="text-3xl font-bold text-blue-900 font-fredoka">Halo, {profile?.full_name || user?.email?.split('@')[0] || "Teman"}! </h2>
             <p class="text-blue-400 font-medium text-sm">Siap menaklukan tantangan hari ini?</p>
         </div>
         
@@ -190,7 +204,7 @@
                     <div class="mb-3 p-3 bg-yellow-50 rounded-full group-hover:bg-yellow-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{comics.unread.length + comics.completed.length}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{(comics?.unread?.length || 0) + (comics?.completed?.length || 0)}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Koleksi</div>
                 </div>
 
@@ -198,7 +212,7 @@
                     <div class="mb-3 p-3 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{lastRead.id ? 1 : 0}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{lastRead?.id ? 1 : 0}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sedang Dibaca</div>
                 </div>
 
@@ -206,7 +220,7 @@
                     <div class="mb-3 p-3 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors group-hover:scale-110 transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
-                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{comics.completed.length}</div>
+                    <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{comics?.completed?.length || 0}</div>
                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sudah Selesai</div>
                 </div>
             </div>
@@ -214,7 +228,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
             <div class="lg:col-span-2 bg-gradient-to-br from-blue-700 to-blue-500 rounded-[2.5rem] p-8 text-white shadow-xl relative overflow-hidden group">
-                {#if lastRead.id}
+                {#if lastRead?.id}
                     {#if lastRead.cover_url}
                         <img src={lastRead.cover_url} alt="cover" class="absolute top-0 right-0 w-1/2 h-full object-cover opacity-10 mask-image-gradient" />
                     {/if}
@@ -254,16 +268,16 @@
                     <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-2 shadow-inner">
                         <span class="text-orange-500 scale-125"><Flame size={32} /></span>
                     </div>
-                    <p class="text-[11px] font-black text-orange-500 uppercase tracking-widest mb-1">{profile?.streak || 0} HARI STREAK!</p>
+                    <p class="text-[11px] font-black text-orange-500 uppercase tracking-widest mb-1">{(profile?.streak || 0)} HARI STREAK!</p>
                     <h3 class="text-xs font-bold text-gray-400 uppercase">Konsistensi Belajar</h3>
                 </div>
                 
                 <div class="w-full px-4 py-6 relative">
                     <div class="absolute top-1/2 left-4 right-4 h-2 bg-gray-100 -translate-y-1/2 rounded-full"></div>
-                    <div class="absolute top-1/2 left-4 h-2 bg-gradient-to-r from-orange-400 to-orange-600 -translate-y-1/2 rounded-full transition-all duration-700" style="width: {Math.max(0, (( (profile?.streak-1) % 5 ) / 4) * 100)}%"></div>
+                    <div class="absolute top-1/2 left-4 h-2 bg-gradient-to-r from-orange-400 to-orange-600 -translate-y-1/2 rounded-full transition-all duration-700" style="width: {Math.max(0, (( ((profile?.streak || 0) - 1) % 5 ) / 4) * 100)}%"></div>
                     <div class="relative flex justify-between w-full">
                         {#each Array(5) as _, i}
-                            <div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full border-4 transition-all duration-500 z-10 { (profile?.streak % 5 || (profile?.streak > 0 ? 5 : 0)) > i ? 'bg-orange-500 border-orange-100 scale-125 shadow-md shadow-orange-200' : 'bg-white border-gray-100' }"></div></div>
+                            <div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full border-4 transition-all duration-500 z-10 { ((profile?.streak || 0) % 5 || ((profile?.streak || 0) > 0 ? 5 : 0)) > i ? 'bg-orange-500 border-orange-100 scale-125 shadow-md shadow-orange-200' : 'bg-white border-gray-100' }"></div></div>
                         {/each}
                     </div>
                 </div>
@@ -276,7 +290,7 @@
                 <div class="w-2 h-8 bg-blue-600 rounded-full"></div>
                 <h3 class="text-2xl font-bold text-blue-900" style="font-family: 'Fredoka', sans-serif;">Tantangan Baru <span class="text-yellow-500">.</span></h3>
             </div>
-            {#if comics.unread.length > 0}
+            {#if comics?.unread?.length > 0}
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {#each comics.unread as comic}
                         <div class="bg-white rounded-[2.5rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group border border-transparent hover:border-blue-100 relative">
@@ -300,16 +314,18 @@
                 <div class="w-2 h-8 bg-green-500 rounded-full"></div>
                 <h3 class="text-2xl font-bold text-blue-900" style="font-family: 'Fredoka', sans-serif;">Sudah Selesai </h3>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-                {#each comics.completed as comic}
-                    <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-green-50 flex flex-col grayscale hover:grayscale-0 transition-all group relative opacity-80 hover:opacity-100">
-                        <div class="absolute -top-2 -right-2 bg-green-500 text-white p-1.5 rounded-full shadow-lg z-10"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-                        <div class="h-36 rounded-2xl overflow-hidden mb-4 shadow-inner"><img src={comic.cover_url} alt={comic.title} class="w-full h-full object-cover" /></div>
-                        <h4 class="font-bold text-sm text-gray-600 line-clamp-1 mb-3">{comic.title}</h4>
-                        <button onclick={() => window.location.href = `/read/${comic.id}`} class="text-[10px] font-black text-blue-500 py-2.5 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest">BACA LAGI</button>
-                    </div>
-                {/each}
-            </div>
+            {#if comics?.completed?.length > 0}
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                    {#each comics.completed as comic}
+                        <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-green-50 flex flex-col grayscale hover:grayscale-0 transition-all group relative opacity-80 hover:opacity-100">
+                            <div class="absolute -top-2 -right-2 bg-green-500 text-white p-1.5 rounded-full shadow-lg z-10"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <div class="h-36 rounded-2xl overflow-hidden mb-4 shadow-inner"><img src={comic.cover_url} alt={comic.title} class="w-full h-full object-cover" /></div>
+                            <h4 class="font-bold text-sm text-gray-600 line-clamp-1 mb-3">{comic.title}</h4>
+                            <button onclick={() => window.location.href = `/read/${comic.id}`} class="text-[10px] font-black text-blue-500 py-2.5 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest">BACA LAGI</button>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
         </div>
     {/if}
 </div>
