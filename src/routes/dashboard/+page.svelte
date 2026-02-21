@@ -7,6 +7,10 @@
 
   const { profile, user, loadingProfile } = getContext('appState');
 
+  // Local fallback user — populated from direct Supabase auth if context is slow
+  let resolvedUser = $state(null);
+  let fetchedOnce = $state(false);
+
   let loading = $state(true);
   let comics = $state({ unread: [], completed: [] });
   let lastRead = $state({ 
@@ -23,6 +27,11 @@
   let sedangDibaca = $state(0);
   let sudahSelesai = $state(0);
 
+  // Helper: get the best available user object
+  function getActiveUser() {
+    return user ?? resolvedUser;
+  }
+
   async function updateStreakInDB(userId, newStreak) {
     try {
         const today = new Date().toISOString();
@@ -34,12 +43,13 @@
 
   async function fetchData() {
     console.log('fetchData started...');
-    if (!user) {
-        console.log('User object missing!');
+    const activeUser = getActiveUser();
+    if (!activeUser) {
+        console.log('Menunggu status login... (user masih null)');
         loading = false;
         return;
     }
-    console.log('User confirmed, ID:', user.id);
+    console.log('User detected:', activeUser.id);
 
     // EMERGENCY DIRECT TEST: Strip all complexity
     console.log('Mencoba ambil komik...');
@@ -47,7 +57,7 @@
     console.log('TEST KOMIK:', comicsRes);
 
     console.log('Mencoba ambil progres membaca...');
-    const progressRes = await supabase.from('student_progress').select('*').eq('user_id', user.id);
+    const progressRes = await supabase.from('student_progress').select('*').eq('user_id', activeUser.id);
     console.log('TEST PROGRES:', progressRes);
 
     // Map data to state
@@ -97,15 +107,38 @@
 
   onMount(async () => {
     console.log('onMount jalan...');
-    // Call fetchData unconditionally first
-    await fetchData();
+
+    // If context user is already available, fetch immediately
+    if (user) {
+        console.log('Context user ready:', user.id);
+        resolvedUser = user;
+        await fetchData();
+    } else {
+        // Context hasn't resolved yet — fallback to direct Supabase auth
+        console.log('Context user null, trying supabase.auth.getUser()...');
+        const { data } = await supabase.auth.getUser();
+        if (data?.user) {
+            console.log('Fallback auth success:', data.user.id);
+            resolvedUser = data.user;
+            await fetchData();
+        } else {
+            console.warn('No authenticated user found. Cannot load dashboard.');
+            loading = false;
+        }
+    }
     // Safety valve
     loading = false;
   });
 
-  // Re-fetch if user becomes available after mount
+  // Auth Watcher: re-fetch when context user becomes available after mount
   $effect(() => {
-    if (user && loading) fetchData();
+    const ctxUser = user;
+    if (ctxUser && !fetchedOnce) {
+        console.log('Auth Watcher: user available:', ctxUser.id);
+        resolvedUser = ctxUser;
+        fetchedOnce = true;
+        fetchData();
+    }
   });
 </script>
 
