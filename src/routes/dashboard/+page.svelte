@@ -72,14 +72,13 @@
         ]);
 
         if (comicsResult.status === 'fulfilled') {
-            console.log('Hasil Supabase (Comics):', comicsResult.value.data?.length, 'items');
-            const comicsRes = comicsResult.value;
-            const allComics = comicsRes.data || [];
+            const allComics = comicsResult.value.data || [];
+            console.log('Hasil Supabase (Comics):', allComics.length, 'items');
             
             let userProgress = [];
             if (progressResult.status === 'fulfilled') {
-                console.log('Hasil Supabase (Progress):', progressResult.value.data?.length, 'items');
                 userProgress = progressResult.value.data || [];
+                console.log('Hasil Supabase (Progress):', userProgress.length, 'items');
             } else {
                 console.error("Progress fetch error:", progressResult.reason);
             }
@@ -94,6 +93,7 @@
             comics = newComics;
 
             // Determine last read
+            let foundLastRead = null;
             if (userProgress.length > 0) {
                 const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
                 const latest = sortedProgress[0];
@@ -105,7 +105,7 @@
                     if (currentPage > totalPages) totalPages = currentPage;
                     const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
 
-                    lastRead = { 
+                    foundLastRead = { 
                         title: lastComic.title, 
                         id: lastComic.id, 
                         page: currentPage,
@@ -113,8 +113,16 @@
                         progressPercent: percent,
                         cover_url: lastComic.cover_url
                     };
+                    lastRead = foundLastRead;
                 }
             }
+
+            console.log('Statistik Terhitung:', { 
+                totalKoleksi: allComics.length, 
+                sedangDibaca: foundLastRead ? 1 : 0,
+                sudahSelesai: newComics.completed.length 
+            });
+
             // 4. Update Cache
             setCached('dashboard', { comics, lastRead });
         } else {
