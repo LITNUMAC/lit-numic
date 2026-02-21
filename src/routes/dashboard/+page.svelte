@@ -40,7 +40,8 @@
         return;
     }
     
-    // 1. Check Cache
+    // 1. Check Cache (TEMPORARILY DISABLED FOR FORCE REFRESH)
+    /* 
     const cachedData = getCached('dashboard');
     if (cachedData) {
         comics = cachedData.comics || { unread: [], completed: [] };
@@ -53,70 +54,91 @@
         loading = false; 
         console.log("Dashboard unlocked via cache hit");
     }
+    */
+    console.log("Cache bypass: Fetching fresh data from Supabase...");
 
     try {
-        // 2. ATOMIC FETCHING: All data in one go
-        console.log("Atomic fetch started: Profile, Comics, and Progress...");
-        const [profileRes, comicsRes, progressRes] = await Promise.all([
-            supabase.from('profiles').select('id, avatar_url, full_name, streak').eq('id', user.id).single(),
+        // 2. UNIFIED PARALLEL FETCHING: Fetch everything at once
+        console.log('--- Pipeline Start ---');
+        console.log('Mencoba ambil komik...');
+        console.log('Mencoba ambil progres membaca...');
+        console.log('Mencoba ambil profil user...');
+
+        const [comicsRes, progressRes, profileRes] = await Promise.allSettled([
             supabase.from('comics').select('id, title, cover_url, description, total_pages, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(20),
-            supabase.from('student_progress').select('comic_id, is_completed, last_read_page, updated_at').eq('user_id', user.id)
+            supabase.from('student_progress').select('comic_id, is_completed, last_read_page, updated_at').eq('user_id', user.id),
+            supabase.from('profiles').select('id, avatar_url, full_name, streak').eq('id', user.id).single()
         ]);
         
-        console.log('Data received from Supabase. Starting mapping...');
+        console.log('All requests settled.');
 
-        // 3. SEQUENTIAL LOGIC: Profile first (no loading = false here yet)
-        if (profileRes.error) console.error("Profile fetch error:", profileRes.error);
-        if (profileRes.data) console.log('Profil dimuat:', profileRes.data.full_name);
+        // 3. Process Profile (Anti-Crash Guard)
+        if (profileRes.status === 'fulfilled' && profileRes.value.data) {
+            console.log('Profile result: fulfilled');
+            // profile is reactive from getContext, no need to assign unless updating
+        } else {
+            console.warn('Profile result: rejected or no data', profileRes.status === 'rejected' ? profileRes.reason : 'No data');
+        }
 
-        // 4. SEQUENTIAL LOGIC: Comics & Progress
-        const allComics = comicsRes.data || [];
-        const userProgress = progressRes.data || [];
-        console.log('Mapping check:', { allComics: allComics.length, userProgress: userProgress.length });
+        // 4. Process Comics & Progress (Anti-Crash Guard)
+        let allComics = [];
+        if (comicsRes.status === 'fulfilled' && comicsRes.value.data) {
+            console.log('Comics result: fulfilled (', comicsRes.value.data.length, ' items)');
+            allComics = comicsRes.value.data;
+        } else {
+            console.warn('Comics result: rejected or no data', comicsRes.status === 'rejected' ? comicsRes.reason : 'No data');
+        }
 
-        if (comicsRes.error) console.error("Comics fetch error:", comicsRes.error);
-        if (progressRes.error) console.error("Progress fetch error:", progressRes.error);
+        let userProgress = [];
+        if (progressRes.status === 'fulfilled' && progressRes.value.data) {
+            console.log('Progress result: fulfilled (', progressRes.value.data.length, ' items)');
+            userProgress = progressRes.value.data;
+        } else {
+            console.warn('Progress result: rejected or no data', progressRes.status === 'rejected' ? progressRes.reason : 'No data');
+        }
 
-        // Map comics and progress
+        // 5. MAPPING & CALCULATION (Sequential & Safe)
         const newComics = { unread: [], completed: [] };
         allComics.forEach(comic => {
             const prog = userProgress.find(p => p.comic_id === comic.id);
-            if (prog && prog.is_completed) newComics.completed.push(comic);
-            else newComics.unread.push(comic);
+            if (prog && prog.is_completed) {
+                newComics.completed.push(comic);
+            } else {
+                newComics.unread.push(comic);
+            }
         });
         
-        // Determine last read
         let foundLastRead = null;
         if (userProgress.length > 0) {
-            const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
             const latest = sortedProgress[0];
             const lastComic = allComics.find(c => c.id === latest.comic_id);
 
             if (lastComic) {
-                let totalPages = lastComic.total_pages || 20; 
-                const currentPage = latest.last_read_page || 1;
-                if (currentPage > totalPages) totalPages = currentPage;
-                const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
+                const totalPages = Number(lastComic.total_pages || 20); 
+                const currentPage = Number(latest.last_read_page || 1);
+                const safeTotal = currentPage > totalPages ? currentPage : totalPages;
+                const percent = Math.min(100, Math.round((currentPage / safeTotal) * 100));
 
                 foundLastRead = { 
                     title: lastComic.title, 
                     id: lastComic.id, 
                     page: currentPage,
-                    totalPages: totalPages,
+                    totalPages: safeTotal,
                     progressPercent: percent,
                     cover_url: lastComic.cover_url
                 };
             }
         }
 
-        // 5. UPDATE ALL STATE SIMULTANEOUSLY (Forced Reactive Sync)
+        // 6. UPDATE ALL STATE (Forced Reactivity)
         comics = { unread: [...newComics.unread], completed: [...newComics.completed] };
         lastRead = foundLastRead ? { ...foundLastRead } : { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
         
-        // Force number conversion to ensure Svelte 5 detects state change
-        totalKoleksi = Number(allComics.length);
+        // Use explicit Number() as requested
+        totalKoleksi = Number(allComics?.length || 0);
         sedangDibaca = foundLastRead ? 1 : 0;
-        sudahSelesai = Number(newComics.completed.length);
+        sudahSelesai = Number(newComics.completed?.length || 0);
 
         console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
         console.log('AKHIR FETCH - Koleksi:', totalKoleksi);
@@ -125,9 +147,9 @@
         setCached('dashboard', { comics, lastRead, stats: { totalKoleksi, sedangDibaca, sudahSelesai } });
 
     } catch (error) {
-        console.error("Dashboard atomic fetch crash:", error);
+        console.error("Dashboard Pipeline Error:", error);
     } finally {
-        console.log("fetchData final sequence complete: Unlocking UI");
+        console.log("--- Pipeline Complete: UI Unlocked ---");
         loading = false;
     }
   }
