@@ -109,14 +109,17 @@
             }
         }
 
-        // 5. UPDATE ALL STATE SIMULTANEOUSLY
-        comics = newComics;
-        lastRead = foundLastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
-        totalKoleksi = allComics.length;
+        // 5. UPDATE ALL STATE SIMULTANEOUSLY (Forced Reactive Sync)
+        comics = { unread: [...newComics.unread], completed: [...newComics.completed] };
+        lastRead = foundLastRead ? { ...foundLastRead } : { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
+        
+        // Force number conversion to ensure Svelte 5 detects state change
+        totalKoleksi = Number(allComics.length);
         sedangDibaca = foundLastRead ? 1 : 0;
-        sudahSelesai = newComics.completed.length;
+        sudahSelesai = Number(newComics.completed.length);
 
         console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
+        console.log('AKHIR FETCH - Koleksi:', totalKoleksi);
 
         // Update Cache
         setCached('dashboard', { comics, lastRead, stats: { totalKoleksi, sedangDibaca, sudahSelesai } });
