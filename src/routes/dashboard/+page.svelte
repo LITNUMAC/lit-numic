@@ -55,101 +55,76 @@
     }
 
     try {
-        // 2. Critical Path: Fetch Profile first
-        console.log("Fetching profile from Supabase...");
-        const { data: profileData, error: profileError } = await supabase.from('profiles')
-            .select('id, avatar_url, full_name, streak')
-            .eq('id', user.id)
-            .single();
-        
-        console.log('Hasil Supabase (Profile):', profileData);
-        if (profileError) console.error("Profile fetch error:", profileError);
-        
-        loading = false; 
-        console.log("UI unlocked after profile attempt");
-
-        // 3. Secondary Path
-        console.log("Fetching comics and progress...");
-        const [comicsResult, progressResult] = await Promise.allSettled([
-            supabase.from('comics')
-                .select('id, title, cover_url, description, total_pages, status, created_at')
-                .eq('status', 'active')
-                .order('created_at', { ascending: false })
-                .limit(20),
-            supabase.from('student_progress')
-                .select('comic_id, is_completed, last_read_page, updated_at')
-                .eq('user_id', user.id)
+        // 2. ATOMIC FETCHING: All data in one go
+        console.log("Atomic fetch started: Profile, Comics, and Progress...");
+        const [profileRes, comicsRes, progressRes] = await Promise.all([
+            supabase.from('profiles').select('id, avatar_url, full_name, streak').eq('id', user.id).single(),
+            supabase.from('comics').select('id, title, cover_url, description, total_pages, status, created_at').eq('status', 'active').order('created_at', { ascending: false }).limit(20),
+            supabase.from('student_progress').select('comic_id, is_completed, last_read_page, updated_at').eq('user_id', user.id)
         ]);
+        
+        console.log('Data received from Supabase. Starting mapping...');
 
-        if (comicsResult.status === 'fulfilled') {
-            const allComics = comicsResult.value.data || [];
-            console.log('Hasil Supabase (Comics):', allComics.length, 'items');
-            
-            let userProgress = [];
-            if (progressResult.status === 'fulfilled') {
-                userProgress = progressResult.value.data || [];
-                console.log('Hasil Supabase (Progress):', userProgress.length, 'items');
-            } else {
-                console.error("Progress fetch error:", progressResult.reason);
+        // 3. SEQUENTIAL LOGIC: Profile first (no loading = false here yet)
+        if (profileRes.error) console.error("Profile fetch error:", profileRes.error);
+        if (profileRes.data) console.log('Profil dimuat:', profileRes.data.full_name);
+
+        // 4. SEQUENTIAL LOGIC: Comics & Progress
+        const allComics = comicsRes.data || [];
+        const userProgress = progressRes.data || [];
+        console.log('Mapping check:', { allComics: allComics.length, userProgress: userProgress.length });
+
+        if (comicsRes.error) console.error("Comics fetch error:", comicsRes.error);
+        if (progressRes.error) console.error("Progress fetch error:", progressRes.error);
+
+        // Map comics and progress
+        const newComics = { unread: [], completed: [] };
+        allComics.forEach(comic => {
+            const prog = userProgress.find(p => p.comic_id === comic.id);
+            if (prog && prog.is_completed) newComics.completed.push(comic);
+            else newComics.unread.push(comic);
+        });
+        
+        // Determine last read
+        let foundLastRead = null;
+        if (userProgress.length > 0) {
+            const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            const latest = sortedProgress[0];
+            const lastComic = allComics.find(c => c.id === latest.comic_id);
+
+            if (lastComic) {
+                let totalPages = lastComic.total_pages || 20; 
+                const currentPage = latest.last_read_page || 1;
+                if (currentPage > totalPages) totalPages = currentPage;
+                const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
+
+                foundLastRead = { 
+                    title: lastComic.title, 
+                    id: lastComic.id, 
+                    page: currentPage,
+                    totalPages: totalPages,
+                    progressPercent: percent,
+                    cover_url: lastComic.cover_url
+                };
             }
-
-            // Map comics and progress
-            const newComics = { unread: [], completed: [] };
-            allComics.forEach(comic => {
-                const prog = userProgress.find(p => p.comic_id === comic.id);
-                if (prog && prog.is_completed) newComics.completed.push(comic);
-                else newComics.unread.push(comic);
-            });
-            comics = newComics;
-
-            // Determine last read
-            let foundLastRead = null;
-            if (userProgress.length > 0) {
-                const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-                const latest = sortedProgress[0];
-                const lastComic = allComics.find(c => c.id === latest.comic_id);
-
-                if (lastComic) {
-                    let totalPages = lastComic.total_pages || 20; 
-                    const currentPage = latest.last_read_page || 1;
-                    if (currentPage > totalPages) totalPages = currentPage;
-                    const percent = Math.min(100, Math.round((currentPage / totalPages) * 100));
-
-                    foundLastRead = { 
-                        title: lastComic.title, 
-                        id: lastComic.id, 
-                        page: currentPage,
-                        totalPages: totalPages,
-                        progressPercent: percent,
-                        cover_url: lastComic.cover_url
-                    };
-                    lastRead = foundLastRead;
-                }
-            }
-
-            console.log('Statistik Terhitung:', { 
-                totalKoleksi: allComics.length, 
-                sedangDibaca: foundLastRead ? 1 : 0,
-                sudahSelesai: newComics.completed.length 
-            });
-
-            // Direct assignment to state variables to force UI update
-            totalKoleksi = allComics.length;
-            sedangDibaca = foundLastRead ? 1 : 0;
-            sudahSelesai = newComics.completed.length;
-
-            console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
-
-            // 4. Update Cache
-            setCached('dashboard', { comics, lastRead, stats: { totalKoleksi, sedangDibaca, sudahSelesai } });
-        } else {
-            console.error("Comics fetch error:", comicsResult.reason);
         }
 
+        // 5. UPDATE ALL STATE SIMULTANEOUSLY
+        comics = newComics;
+        lastRead = foundLastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
+        totalKoleksi = allComics.length;
+        sedangDibaca = foundLastRead ? 1 : 0;
+        sudahSelesai = newComics.completed.length;
+
+        console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
+
+        // Update Cache
+        setCached('dashboard', { comics, lastRead, stats: { totalKoleksi, sedangDibaca, sudahSelesai } });
+
     } catch (error) {
-        console.error("Dashboard fetch crash:", error);
+        console.error("Dashboard atomic fetch crash:", error);
     } finally {
-        console.log("fetchData finally block: forcing loading to false");
+        console.log("fetchData final sequence complete: Unlocking UI");
         loading = false;
     }
   }
@@ -387,4 +362,3 @@
     100% { transform: translateX(100%); }
   }
 </style>
-```
