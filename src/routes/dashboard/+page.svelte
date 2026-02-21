@@ -19,19 +19,28 @@
   });
 
   async function updateStreakInDB(userId, newStreak) {
-    const today = new Date().toISOString();
-    await supabase.from('profiles').update({ streak: newStreak, last_active: today }).eq('id', userId);
+    try {
+        const today = new Date().toISOString();
+        await supabase.from('profiles').update({ streak: newStreak, last_active: today }).eq('id', userId);
+    } catch (e) {
+        console.error("Gagal update streak:", e);
+    }
   }
 
   async function fetchData() {
-    if (!user) return;
+    if (!user) {
+        console.log("No user found, cancelling fetch and clearing loading");
+        loading = false;
+        return;
+    }
     
     // 1. Cek Cache
     const cachedData = getCached('dashboard');
     if (cachedData) {
-        comics = cachedData.comics;
-        lastRead = cachedData.lastRead;
-        loading = false; // Pastikan loading false jika dari cache
+        comics = cachedData.comics || { unread: [], completed: [] };
+        lastRead = cachedData.lastRead || { title: "Belum ada bacaan", id: null, page: 1, totalPages: 1, progressPercent: 0, cover_url: "" };
+        loading = false; 
+        console.log("Dashboard loaded from cache");
         return;
     }
 
@@ -54,22 +63,21 @@
                 .single()
         ]);
 
-        console.log("Data berhasil dimuat");
+        console.log("Data berhasil dimuat dari Supabase");
 
-        const allComics = comicsRes.data;
-        const userProgress = progressRes.data;
-        // profileData handle via appState context but we fetch for consistency in selective query
+        const allComics = comicsRes.data || [];
+        const userProgress = progressRes.data || [];
 
-        if (allComics) {
+        if (allComics.length > 0) {
             const newComics = { unread: [], completed: [] };
             allComics.forEach(comic => {
-                const prog = userProgress?.find(p => p.comic_id === comic.id);
+                const prog = userProgress.find(p => p.comic_id === comic.id);
                 if (prog && prog.is_completed) newComics.completed.push(comic);
                 else newComics.unread.push(comic);
             });
             comics = newComics;
 
-            if (userProgress && userProgress.length > 0) {
+            if (userProgress.length > 0) {
                 const sortedProgress = [...userProgress].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
                 const latest = sortedProgress[0];
                 const lastComic = allComics.find(c => c.id === latest.comic_id);
@@ -97,23 +105,23 @@
     } catch (error) {
         console.error("Gagal memuat data dashboard:", error);
     } finally {
-        // Set loading false SEGERA & WAJIB di dalam finally
+        console.log('Fetching Complete, setting loading to false');
         loading = false;
     }
   }
 
-  onMount(() => { 
-    if (user) fetchData(); 
+  onMount(async () => { 
+    if (user) await fetchData(); 
   });
 
-  // Re-fetch if user becomes available (e.g. after login/mount in layout)
+  // Re-fetch if user becomes available
   $effect(() => {
     if (user && loading) fetchData();
   });
 </script>
 
 <div in:fade>
-    {#if loading || loadingProfile}
+    {#if loading}
         <!-- DASHBOARD SKELETON SCREEN -->
         <div class="flex flex-col gap-10" in:fade>
             <!-- Header Skeleton -->
