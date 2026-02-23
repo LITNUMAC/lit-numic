@@ -70,7 +70,7 @@
       </div>
 
     {:else}
-      <div class="flex flex-col md:flex-row justify-center items-center md:items-end gap-8 md:gap-6 mb-16 h-auto md:h-64 mt-10" in:scale={{ duration: 600 }}>
+      <div class="flex flex-col md:flex-row justify-center items-center md:items-end gap-6 md:gap-6 mb-10 md:mb-16 h-auto md:h-64 mt-6 md:mt-10" in:scale={{ duration: 600 }}>
           
           {#if leaderboardData[1]}
           <div class="flex flex-col items-center relative z-10 w-full max-w-[150px] md:w-32 group order-2 md:order-1">
@@ -122,30 +122,30 @@
           
           <div class="divide-y divide-gray-50 overflow-x-auto">
               {#each leaderboardData.slice(3) as userEntry, index}
-                  <div class="flex items-center px-6 py-4 hover:bg-blue-50/30 transition-colors {user?.id === userEntry.id ? 'bg-yellow-50/50 relative overflow-hidden' : ''}">
+                  <div class="flex items-center px-3 md:px-6 py-3 md:py-4 hover:bg-blue-50/30 transition-colors {user?.id === userEntry.id ? 'bg-yellow-50/50 relative overflow-hidden' : ''}">
                       
                       {#if user?.id === userEntry.id}
                           <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-400"></div>
                       {/if}
                       
-                      <div class="w-12 text-center font-black text-gray-300 text-xl shrink-0">
+                      <div class="w-8 md:w-12 text-center font-black text-gray-300 text-lg md:text-xl shrink-0">
                           {index + 4}
                       </div>
                       
-                      <div class="flex-1 px-4 flex items-center gap-4 min-w-0">
-                          <img src={userEntry.avatar_url} alt="avatar" class="w-10 h-10 rounded-full border-2 border-gray-100 bg-white shadow-sm shrink-0" />
+                      <div class="flex-1 px-2 md:px-4 flex items-center gap-2 md:gap-4 min-w-0">
+                          <img src={userEntry.avatar_url} alt="avatar" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-gray-100 bg-white shadow-sm shrink-0" />
                           <div class="min-w-0">
-                              <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2 truncate">
+                              <h4 class="font-bold text-gray-800 text-xs md:text-sm flex items-center gap-1 md:gap-2 truncate">
                                   {userEntry.full_name} 
                                   {#if user?.id === userEntry.id}
                                       <span class="text-[9px] bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider shrink-0">Kamu</span>
                                   {/if}
                               </h4>
-                              <p class="text-[11px] text-gray-400 mt-0.5 truncate">@{userEntry.username || 'user'} • {userEntry.class ? `Kelas ${userEntry.class}` : 'Siswa'}</p>
+                              <p class="text-[10px] md:text-[11px] text-gray-400 mt-0.5 truncate">@{userEntry.username || 'user'} • {userEntry.class ? `Kelas ${userEntry.class}` : 'Siswa'}</p>
                           </div>
                       </div>
                       
-                      <div class="w-24 text-right font-black text-orange-500 text-lg shrink-0">
+                      <div class="w-16 md:w-24 text-right font-black text-orange-500 text-base md:text-lg shrink-0">
                           {userEntry.streak || 0}
                       </div>
                   </div>

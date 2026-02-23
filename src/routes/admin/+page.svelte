@@ -131,7 +131,7 @@
 </script>
 
 <div in:fly={{ y: 20, duration: 500 }} class="pb-10 font-poppins">
-    <h2 class="text-2xl font-bold text-blue-900 mb-6 font-poppins">{$t('adminTitle')}</h2>
+    <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-4 md:mb-6 font-poppins">{$t('adminTitle')}</h2>
 
     {#if loading}
         <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
@@ -139,44 +139,44 @@
             {$t('loading')}
         </div>
     {:else}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-10">
+            <div class="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-blue-50 opacity-20 group-hover:scale-110 transition-transform"><Users size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminUsers')}</h3>
-                <span class="text-5xl font-black text-blue-600 font-fredoka">{stats.totalUser}</span>
+                <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2">{$t('adminUsers')}</h3>
+                <span class="text-3xl md:text-5xl font-black text-blue-600 font-fredoka">{stats.totalUser}</span>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
+            <div class="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-yellow-50 opacity-20 group-hover:scale-110 transition-transform"><Library size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminComics')}</h3>
-                <span class="text-5xl font-black text-yellow-400 font-fredoka">{stats.totalKomik}</span>
+                <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2">{$t('adminComics')}</h3>
+                <span class="text-3xl md:text-5xl font-black text-yellow-400 font-fredoka">{stats.totalKomik}</span>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
+            <div class="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-green-50 opacity-20 group-hover:scale-110 transition-transform"><CheckCircle size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminQuiz')}</h3>
-                <span class="text-5xl font-black text-green-500 font-fredoka">{stats.totalKuis}</span>
+                <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2">{$t('adminQuiz')}</h3>
+                <span class="text-3xl md:text-5xl font-black text-green-500 font-fredoka">{stats.totalKuis}</span>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
+            <div class="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-purple-50 opacity-20 group-hover:scale-110 transition-transform"><TrendingUp size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminAvg')}</h3>
-                <span class="text-5xl font-black text-purple-500 font-fredoka">{stats.rataRataNilai}</span>
+                <h3 class="text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2">{$t('adminAvg')}</h3>
+                <span class="text-3xl md:text-5xl font-black text-purple-500 font-fredoka">{stats.rataRataNilai}</span>
             </div>
         </div>
 
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
-            <div class="flex justify-between items-center mb-8">
+        <div class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start md:items-center mb-4 md:mb-8">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">{$t('adminChartTitle')}</h3>
-                    <p class="text-sm text-gray-400">{$t('adminChartSub')}</p>
+                    <h3 class="text-base md:text-xl font-bold text-gray-800">{$t('adminChartTitle')}</h3>
+                    <p class="text-xs md:text-sm text-gray-400">{$t('adminChartSub')}</p>
                 </div>
                 <div class="flex gap-2">
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-widest">{$t('adminChartBadge')}</span>
+                    <span class="px-2 md:px-3 py-1 bg-blue-50 text-blue-600 text-[9px] md:text-[10px] font-bold rounded-lg uppercase tracking-widest whitespace-nowrap">{$t('adminChartBadge')}</span>
                 </div>
             </div>
 
-            <div class="h-[300px] w-full">
+            <div class="h-[200px] md:h-[300px] w-full">
                 <canvas bind:this={canvasElement}></canvas>
             </div>
             

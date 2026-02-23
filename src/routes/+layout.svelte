@@ -166,7 +166,7 @@
       
       <!-- Global Header -->
       {#if isAppRoute && !isReaderOrQuiz}
-        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center shrink-0 z-[50] sticky top-0 px-4 md:px-8">
+        <header class="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center shrink-0 z-[50] sticky top-0 px-3 md:px-8">
             <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <!-- Global Hamburger Button -->
@@ -187,31 +187,32 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 md:gap-2">
                     {#if profile?.role === 'admin'}
                       <a href="/dashboard" class="hidden md:flex items-center gap-2 text-xs font-bold text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl transition-all">
                           {$t('navAdminPreview')} <Globe size={14} />
                       </a>
                     {/if}
 
-                    <!-- Language Toggle Button -->
+                    <!-- Language Toggle: flag emoji only on mobile, full label on desktop -->
                     <button
                         onclick={toggleLocale}
-                        class="hidden md:flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-xl transition-all border border-gray-100"
+                        class="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-2 md:px-3 py-2 rounded-xl transition-all border border-gray-100"
                         title="Switch Language"
                     >
-                        {$t('langToggle')}
+                        <span class="md:hidden text-sm leading-none">{$locale === 'id' ? '🇬🇧' : '🇮🇩'}</span>
+                        <span class="hidden md:inline">{$t('langToggle')}</span>
                     </button>
 
                     {#if user}
-                      <div class="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 px-2 md:px-4 py-1.5 rounded-2xl border border-gray-100 transition-all cursor-pointer">
+                      <div class="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 px-2 md:px-4 py-1.5 rounded-2xl border border-gray-100 transition-all cursor-pointer">
                           <div class="text-right hidden sm:block">
                               <p class="text-xs font-bold text-gray-900 leading-none">{profile?.full_name || user?.email?.split('@')[0] || 'User'}</p>
                               <p class="text-[10px] text-gray-400 mt-1 uppercase font-black tracking-wider">
                                 {profile?.role === 'admin' ? 'Super Admin' : (profile?.class ? `Kelas ${profile.class}` : 'Siswa')}
                               </p>
                           </div>
-                          <div class="w-10 h-10 bg-white rounded-xl border-2 border-white shadow-sm overflow-hidden flex-shrink-0">
+                          <div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl border-2 border-white shadow-sm overflow-hidden flex-shrink-0">
                               <img 
                                 src={profile?.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.email || 'user'}`} 
                                 alt="avatar" 
