@@ -25,7 +25,7 @@
         // 2. Fetch dengan Specific Columns & Limit
         const { data, error } = await supabase
             .from('profiles')
-            .select('id, full_name, email, role, created_at')
+            .select('id, full_name, username, role, created_at')
             .order('created_at', { ascending: false })
             .limit(20);
 
@@ -69,7 +69,7 @@
     // Logika Pencarian
     $: filteredUsers = users.filter(user => 
         user.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+        user.username?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 </script>
 
@@ -103,7 +103,7 @@
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
                             <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Nama Lengkap</th>
-                            <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Email</th>
+                            <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Username</th>
                             <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Role</th>
                             <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Bergabung</th>
                             <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Aksi</th>
@@ -115,7 +115,7 @@
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-gray-800">{user.full_name || 'No Name'}</div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{user.email}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">@{user.username || '-'}</td>
                                 <td class="px-6 py-4">
                                     <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {user.role === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}">
                                         {user.role}
