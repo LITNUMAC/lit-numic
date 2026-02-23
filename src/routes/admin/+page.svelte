@@ -8,20 +8,20 @@
     // Cache disabled — always fetch fresh data so chart reflects real database state
     import { t, locale } from '$lib/i18n';
 
-    let stats = {
+    let stats = $state({
         totalUser: 0,
         totalKomik: 0,
         totalKuis: 0,
         rataRataNilai: 0
-    };
-    let loading = true;
+    });
+    let loading = $state(true);
     let canvasElement; // Referensi untuk grafik
     let chartInstance = null; // Untuk menyimpan data grafik agar tidak menumpuk
 
     // Chart data — initialized with zeros, populated from Supabase
     // Day labels are reactive to locale
     let chartLabels = $derived($t('chartDays'));
-    let chartData = [0, 0, 0, 0, 0, 0, 0];
+    let chartData = $state([0, 0, 0, 0, 0, 0, 0]);
 
     onMount(async () => {
         await fetchData();
