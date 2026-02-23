@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabaseClient';
-  import { Mail, AlertTriangle, Trash2 } from 'lucide-svelte';
+  import { Mail, AlertTriangle, Trash2, Languages } from 'lucide-svelte';
+  import { locale, t, toggleLocale } from '$lib/i18n';
 
   let email = 'Memuat...';
   let loading = false;
@@ -27,7 +28,8 @@
 <div class="max-w-xl">
   <h2 class="text-2xl font-bold text-blue-900 mb-6 font-fredoka border-b border-gray-100 pb-4">Akun & Data</h2>
 
-  <div class="bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mb-8">
+  <!-- Email Card -->
+  <div class="bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mb-6">
     <div class="flex items-start gap-4">
         <div class="bg-blue-100 p-3 rounded-full text-blue-600">
             <Mail size={24} />
@@ -43,7 +45,50 @@
     </div>
   </div>
 
-  <div class="mt-12">
+  <!-- Language Switcher Card -->
+  <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 mb-10">
+    <div class="flex items-start gap-4">
+        <div class="bg-gray-100 p-3 rounded-full text-gray-500">
+            <Languages size={24} />
+        </div>
+        <div class="flex-1">
+            <h3 class="font-bold text-lg text-blue-900 mb-1">
+              {$locale === 'id' ? 'Bahasa Tampilan' : 'Display Language'}
+            </h3>
+            <p class="text-slate-500 text-sm mb-5">
+              {$locale === 'id'
+                ? 'Pilih bahasa yang ingin digunakan di seluruh aplikasi.'
+                : 'Choose the language used across the app.'}
+            </p>
+            <div class="flex gap-3">
+                <button
+                    onclick={toggleLocale}
+                    class="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all shadow-sm border
+                    {$locale === 'id'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-blue-100'
+                        : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200'}"
+                >
+                    🇮🇩 Bahasa Indonesia
+                </button>
+                <button
+                    onclick={toggleLocale}
+                    class="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all shadow-sm border
+                    {$locale === 'en'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-blue-100'
+                        : 'bg-white text-gray-400 border-gray-200 hover:border-blue-200'}"
+                >
+                    🇬🇧 English
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-3 italic">
+              {$locale === 'id' ? '* Bahasa aktif disimpan otomatis.' : '* Active language is saved automatically.'}
+            </p>
+        </div>
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div>
     <h3 class="text-red-500 font-bold mb-4 flex items-center gap-2">
         <AlertTriangle size={20} /> Danger Zone
     </h3>

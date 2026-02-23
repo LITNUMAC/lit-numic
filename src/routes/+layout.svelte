@@ -194,16 +194,6 @@
                       </a>
                     {/if}
 
-                    <!-- Language Toggle: flag emoji only on mobile, full label on desktop -->
-                    <button
-                        onclick={toggleLocale}
-                        class="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-2 md:px-3 py-2 rounded-xl transition-all border border-gray-100"
-                        title="Switch Language"
-                    >
-                        <span class="md:hidden text-sm leading-none">{$locale === 'id' ? '🇬🇧' : '🇮🇩'}</span>
-                        <span class="hidden md:inline">{$t('langToggle')}</span>
-                    </button>
-
                     {#if user}
                       <div class="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 px-2 md:px-4 py-1.5 rounded-2xl border border-gray-100 transition-all cursor-pointer">
                           <div class="text-right hidden sm:block">
