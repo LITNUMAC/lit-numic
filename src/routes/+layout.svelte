@@ -10,6 +10,7 @@
   } from 'lucide-svelte';
   import { setContext } from 'svelte';
   import favicon from '$lib/assets/favicon.svg';
+  import { locale, t, toggleLocale } from '$lib/i18n';
 
   let { children } = $props();
   
@@ -112,37 +113,37 @@
 
         <nav class="flex-1 space-y-2 px-2">
             {#if profile?.role === 'admin'}
-              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em] mt-6">Panel Admin</p>
+              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em] mt-6">{$t('menuAdmin')}</p>
               <a href="/admin" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/admin') && $page.url.pathname === '/admin' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <LayoutDashboard size={20} /> Dashboard
+                <LayoutDashboard size={20} /> {$t('navDashboard')}
               </a>
               <a href="/admin/komik" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/admin/komik') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <BookOpen size={20} /> Kelola Komik
+                <BookOpen size={20} /> {$t('navAdminKomik')}
               </a>
               <a href="/admin/soal" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/admin/soal') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <FileQuestion size={20} /> Bank Soal
+                <FileQuestion size={20} /> {$t('navAdminSoal')}
               </a>
               <a href="/admin/user" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/admin/user') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Users size={20} /> Manajemen User
+                <Users size={20} /> {$t('navAdminUser')}
               </a>
             {:else if profile}
-              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">Menu Siswa</p>
+              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">{$t('menuSiswa')}</p>
               <a href="/dashboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/dashboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Home size={20} /> Dashboard
+                <Home size={20} /> {$t('navDashboard')}
               </a>
               <a href="/leaderboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/leaderboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Trophy size={20} /> Leaderboard
+                <Trophy size={20} /> {$t('navLeaderboard')}
               </a>
             {:else}
-              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">Navigasi</p>
+              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">{$t('menuNav')}</p>
               <a href="/" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {$page.url.pathname === '/' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Home size={20} /> Home
+                <Home size={20} /> {$t('navHome')}
               </a>
               <a href="/login" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/login') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Globe size={20} /> Login
+                <Globe size={20} /> {$t('navLogin')}
               </a>
               <a href="/register" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/register') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                  <Rocket size={20} /> Daftar Akun
+                <Rocket size={20} /> {$t('navRegister')}
               </a>
             {/if}
         </nav>
@@ -150,10 +151,10 @@
         <div class="mt-auto pt-6 border-t border-gray-50 px-2 space-y-1">
             {#if profile}
               <a href="/settings/profile" class="flex items-center gap-3 px-5 py-3.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
-                  <Settings size={20} /> Pengaturan
+                  <Settings size={20} /> {$t('navSettings')}
               </a>
               <button onclick={() => showLogoutModal = true} class="w-full flex items-center gap-3 px-5 py-3.5 text-red-400 hover:bg-red-50 rounded-2xl transition-all font-medium">
-                  <LogOut size={20} /> Keluar Akun
+                  <LogOut size={20} /> {$t('navLogout')}
               </button>
             {/if}
         </div>
@@ -186,13 +187,22 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
                     {#if profile?.role === 'admin'}
                       <a href="/dashboard" class="hidden md:flex items-center gap-2 text-xs font-bold text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl transition-all">
-                          Pratinjau Siswa <Globe size={14} />
+                          {$t('navAdminPreview')} <Globe size={14} />
                       </a>
                     {/if}
-                    
+
+                    <!-- Language Toggle Button -->
+                    <button
+                        onclick={toggleLocale}
+                        class="hidden md:flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-xl transition-all border border-gray-100"
+                        title="Switch Language"
+                    >
+                        {$t('langToggle')}
+                    </button>
+
                     {#if user}
                       <div class="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 px-2 md:px-4 py-1.5 rounded-2xl border border-gray-100 transition-all cursor-pointer">
                           <div class="text-right hidden sm:block">
@@ -236,11 +246,11 @@
             <div class="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-red-500">
                 <LogOut size={40} />
             </div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-2 font-fredoka">Keluar Akun?</h2>
-            <p class="text-gray-500 text-sm mb-10">Kamu perlu login kembali untuk mengakses data belajarmu di LIT-NUMIC.</p>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2 font-fredoka">{$t('logoutTitle')}</h2>
+            <p class="text-gray-500 text-sm mb-10">{$t('logoutDesc')}</p>
             <div class="flex justify-center gap-4">
-                <button onclick={() => showLogoutModal = false} class="flex-1 py-4 rounded-2xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition-all">Batal</button>
-                <button onclick={handleLogout} class="flex-1 py-4 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-xl shadow-red-200 transition-all">Ya, Keluar</button>
+                <button onclick={() => showLogoutModal = false} class="flex-1 py-4 rounded-2xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition-all">{$t('logoutCancel')}</button>
+                <button onclick={handleLogout} class="flex-1 py-4 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-xl shadow-red-200 transition-all">{$t('logoutConfirm')}</button>
             </div>
         </div>
     </div>

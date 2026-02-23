@@ -3,6 +3,7 @@
   import { supabase } from '$lib/supabaseClient';
   import { fade, fly, scale } from 'svelte/transition';
   import { Library, Flame } from 'lucide-svelte';
+  import { t } from '$lib/i18n';
   // Cache import disabled for emergency debug
 
   const { profile, user, loadingProfile } = getContext('appState');
@@ -200,12 +201,12 @@
         </div>
     {:else}
         <div class="mb-10">
-            <h2 class="text-3xl font-bold text-blue-900 font-fredoka">Halo, {profile?.full_name || user?.email?.split('@')[0] || "Teman"}! </h2>
-            <p class="text-blue-400 font-medium text-sm">Siap menaklukan tantangan hari ini?</p>
+            <h2 class="text-3xl font-bold text-blue-900 font-fredoka">{$t('dashGreeting')} {profile?.full_name || user?.email?.split('@')[0] || "Teman"}! </h2>
+            <p class="text-blue-400 font-medium text-sm">{$t('dashSubtitle')}</p>
         </div>
         
         <section class="mb-12" in:fly={{ y: 20, duration: 600 }}>
-            <h3 class="text-xl font-bold text-gray-800 mb-6">Pantau aktivitas membaca</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-6">{$t('dashActivity')}</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-50 flex flex-col items-center justify-center text-center hover:shadow-lg transition-all group">
@@ -213,7 +214,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>
                     </div>
                     <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{totalKoleksi}</div>
-                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Koleksi</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{$t('dashStatTotal')}</div>
                 </div>
 
                 <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-50 flex flex-col items-center justify-center text-center hover:shadow-lg transition-all group">
@@ -221,7 +222,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     </div>
                     <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{sedangDibaca}</div>
-                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sedang Dibaca</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{$t('dashStatReading')}</div>
                 </div>
 
                 <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-blue-50 flex flex-col items-center justify-center text-center hover:shadow-lg transition-all group">
@@ -229,7 +230,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
                     <div class="text-4xl font-black text-gray-800 font-fredoka mb-1">{sudahSelesai}</div>
-                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sudah Selesai</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{$t('dashStatDone')}</div>
                 </div>
             </div>
         </section>
@@ -242,17 +243,17 @@
                     {/if}
                     <div class="relative z-10 flex flex-col justify-between h-full">
                         <div>
-                            <div class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-black mb-2 border border-white/10 tracking-widest uppercase"> Lanjutkan Cerita</div>
+                            <div class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-black mb-2 border border-white/10 tracking-widest uppercase"> {$t('dashContinueStory')}</div>
                             <h3 class="text-3xl font-bold mb-1 line-clamp-1">{lastRead.title}</h3>
                             <div class="flex items-center gap-2 text-blue-100 text-sm opacity-90">
-                                <span>Halaman {lastRead.page} dari {lastRead.totalPages}</span>
+                                <span>{$t('dashPage')} {lastRead.page} {$t('dashOf')} {lastRead.totalPages}</span>
                                 <span>•</span>
-                                <span>{lastRead.progressPercent}% Selesai</span>
+                                <span>{lastRead.progressPercent}% {$t('dashStatDone')}</span>
                             </div>
                         </div>
                         <div class="mt-8 flex items-end justify-between gap-6">
                             <div class="flex-1">
-                                <div class="flex justify-between text-xs font-bold mb-2"><span class="text-blue-100">Progress</span><span class="text-yellow-300">{lastRead.progressPercent}%</span></div>
+                                <div class="flex justify-between text-xs font-bold mb-2"><span class="text-blue-100">{$t('dashProgress')}</span><span class="text-yellow-300">{lastRead.progressPercent}%</span></div>
                                 <div class="w-full bg-black/20 rounded-full h-3 overflow-hidden border border-white/10">
                                     <div class="bg-yellow-400 h-full rounded-full transition-all duration-1000" style="width: {lastRead.progressPercent}%"></div>
                                 </div>
@@ -320,7 +321,7 @@
         <div class="mb-10 pb-10">
             <div class="flex items-center gap-3 mb-8 px-2 opacity-50">
                 <div class="w-2 h-8 bg-green-500 rounded-full"></div>
-                <h3 class="text-2xl font-bold text-blue-900" style="font-family: 'Fredoka', sans-serif;">Sudah Selesai </h3>
+                <h3 class="text-2xl font-bold text-blue-900" style="font-family: 'Fredoka', sans-serif;">{$t('dashCompleted')} </h3>
             </div>
             {#if comics?.completed?.length > 0}
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">

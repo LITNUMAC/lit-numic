@@ -6,6 +6,7 @@
     
     import Chart from 'chart.js/auto'; 
     // Cache disabled — always fetch fresh data so chart reflects real database state
+    import { t, locale } from '$lib/i18n';
 
     let stats = {
         totalUser: 0,
@@ -18,12 +19,21 @@
     let chartInstance = null; // Untuk menyimpan data grafik agar tidak menumpuk
 
     // Chart data — initialized with zeros, populated from Supabase
-    let chartLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    // Day labels are reactive to locale
+    let chartLabels = $derived($t('chartDays'));
     let chartData = [0, 0, 0, 0, 0, 0, 0];
 
     onMount(async () => {
         await fetchData();
         renderChart(chartData);
+    });
+
+    // Re-render chart when locale changes so day labels update
+    $effect(() => {
+        const _ = $locale; // subscribe
+        if (chartInstance) {
+            renderChart(chartData);
+        }
     });
 
     async function fetchData() {
@@ -116,36 +126,36 @@
 </script>
 
 <div in:fly={{ y: 20, duration: 500 }} class="pb-10 font-poppins">
-    <h2 class="text-2xl font-bold text-blue-900 mb-6 font-poppins">Ringkasan Dashboard</h2>
+    <h2 class="text-2xl font-bold text-blue-900 mb-6 font-poppins">{$t('adminTitle')}</h2>
 
     {#if loading}
         <div class="flex flex-col items-center justify-center py-20 text-blue-400 font-bold animate-pulse">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-            Memuat data dashboard...
+            {$t('loading')}
         </div>
     {:else}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-blue-50 opacity-20 group-hover:scale-110 transition-transform"><Users size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Total Siswa</h3>
+                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminUsers')}</h3>
                 <span class="text-5xl font-black text-blue-600 font-fredoka">{stats.totalUser}</span>
             </div>
 
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-yellow-50 opacity-20 group-hover:scale-110 transition-transform"><Library size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Total Komik</h3>
+                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminComics')}</h3>
                 <span class="text-5xl font-black text-yellow-400 font-fredoka">{stats.totalKomik}</span>
             </div>
 
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-green-50 opacity-20 group-hover:scale-110 transition-transform"><CheckCircle size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Kuis Selesai</h3>
+                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminQuiz')}</h3>
                 <span class="text-5xl font-black text-green-500 font-fredoka">{stats.totalKuis}</span>
             </div>
 
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 text-purple-50 opacity-20 group-hover:scale-110 transition-transform"><TrendingUp size={80} /></div>
-                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">Rata-rata Nilai</h3>
+                <h3 class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2">{$t('adminAvg')}</h3>
                 <span class="text-5xl font-black text-purple-500 font-fredoka">{stats.rataRataNilai}</span>
             </div>
         </div>
@@ -153,11 +163,11 @@
         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
             <div class="flex justify-between items-center mb-8">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">Tren Aktivitas Belajar</h3>
-                    <p class="text-sm text-gray-400">Jumlah pengerjaan kuis dalam 7 hari terakhir</p>
+                    <h3 class="text-xl font-bold text-gray-800">{$t('adminChartTitle')}</h3>
+                    <p class="text-sm text-gray-400">{$t('adminChartSub')}</p>
                 </div>
                 <div class="flex gap-2">
-                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-widest">Minggu Ini</span>
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-widest">{$t('adminChartBadge')}</span>
                 </div>
             </div>
 
@@ -166,7 +176,7 @@
             </div>
             
             <div class="mt-6 pt-6 border-t border-gray-50 flex justify-center">
-                <p class="text-xs text-blue-400 italic">Data otomatis diperbarui setiap ada siswa yang menyelesaikan kuis.</p>
+                <p class="text-xs text-blue-400 italic">{$t('adminChartNote')}</p>
             </div>
         </div>
     {/if}
