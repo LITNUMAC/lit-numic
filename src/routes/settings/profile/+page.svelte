@@ -221,8 +221,8 @@
   }
 </script>
 
-<div class="max-w-xl">
-  <h2 class="text-2xl font-bold text-blue-900 mb-6 font-fredoka border-b border-gray-100 pb-4">Profil Saya</h2>
+<div class="w-full max-w-xl">
+  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">Profil Saya</h2>
 
   <!-- Avatar Section -->
   <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-10 text-center md:text-left">
@@ -356,7 +356,7 @@
       <button 
         type="submit" 
         disabled={loading}
-        class="px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold rounded-xl shadow-lg shadow-yellow-100 hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
+        class="w-full sm:w-auto px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold rounded-xl shadow-lg shadow-yellow-100 hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
       >
         <Save size={18} />
         {loading ? 'Menyimpan...' : 'Simpan Perubahan'}

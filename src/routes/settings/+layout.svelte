@@ -13,7 +13,7 @@
   ];
 </script>
 
-<div class="flex flex-col gap-6" in:fade>
+<div class="flex flex-col gap-4 md:gap-6 w-full" in:fade>
   
   <!-- Sub-nav: horizontal scrollable pills on mobile, sidebar on desktop -->
   <aside class="w-full">
@@ -66,8 +66,8 @@
   </aside>
 
   <!-- Content Slot -->
-  <main class="flex-1 min-w-0">
-    <div class="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-5 md:p-10 shadow-sm border border-gray-100 min-h-[400px]">
+  <main class="flex-1 min-w-0 w-full">
+    <div class="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-10 shadow-sm border border-gray-100 min-h-[400px] overflow-hidden">
       {@render children()}
     </div>
   </main>

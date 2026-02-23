@@ -41,8 +41,8 @@
   }
 </script>
 
-<div class="max-w-xl">
-  <h2 class="text-2xl font-bold text-blue-900 mb-6 font-fredoka border-b border-gray-100 pb-4">Keamanan & Password</h2>
+<div class="w-full max-w-xl">
+  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">Keamanan &amp; Password</h2>
 
   <form onsubmit={(e) => { e.preventDefault(); updatePassword(); }} class="space-y-6">
     
@@ -89,7 +89,7 @@
       <button 
         type="submit" 
         disabled={loading}
-        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
+        class="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
       >
         {loading ? 'Memproses...' : 'Ubah Password'}
       </button>
