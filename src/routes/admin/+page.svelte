@@ -92,13 +92,18 @@
             chartInstance.destroy();
         }
 
+        // De-proxy: spread into plain arrays so Chart.js can add its own
+        // property descriptors without conflicting with Svelte 5's $state proxy
+        const plainData   = [...data];
+        const plainLabels = [...chartLabels];
+
         chartInstance = new Chart(canvasElement, {
             type: 'line',
             data: {
-                labels: chartLabels,
+                labels: plainLabels,
                 datasets: [{
                     label: 'Aktivitas Belajar',
-                    data: data, // Real-time data from Supabase
+                    data: plainData,
                     borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     fill: true,
