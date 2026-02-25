@@ -147,10 +147,10 @@
     {#if loading}
         <!-- DASHBOARD SKELETON SCREEN -->
         <div class="flex flex-col gap-10" in:fade>
-            <!-- Header Skeleton -->
-            <div class="space-y-3">
-                <div class="h-10 w-64 bg-gray-200 rounded-2xl animate-pulse"></div>
-                <div class="h-4 w-48 bg-gray-100 rounded-xl animate-pulse"></div>
+            <!-- Header Skeleton: Logo pulsing -->
+            <div class="flex flex-col items-start gap-3">
+                <img src="/logo.png" alt="LIT-NUMIC" class="h-14 w-auto opacity-40 animate-pulse" />
+                <div class="h-3 w-48 bg-gray-100 rounded-xl animate-pulse"></div>
             </div>
 
             <!-- Stats Skeleton -->
