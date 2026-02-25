@@ -149,7 +149,7 @@
         <div class="flex flex-col gap-10" in:fade>
             <!-- Header Skeleton: Logo pulsing -->
             <div class="flex flex-col items-start gap-3">
-                <img src="/logo.png" alt="LIT-NUMIC" class="h-14 w-auto opacity-40 animate-pulse" />
+                <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-14 w-auto opacity-30 animate-pulse" />
                 <div class="h-3 w-48 bg-gray-100 rounded-xl animate-pulse"></div>
             </div>
 

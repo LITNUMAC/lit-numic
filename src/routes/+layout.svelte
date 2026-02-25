@@ -102,9 +102,10 @@
       <aside class="fixed inset-y-0 left-0 bg-white z-[70] w-72 border-r border-gray-100 p-6 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 
         {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:m-4 lg:rounded-[2.5rem] lg:h-[calc(100vh-2rem)] lg:shadow-xl lg:shadow-blue-900/5">
         
-        <div class="mb-6 px-2 flex justify-between items-center">
-            <a href="/dashboard" class="flex items-center">
-                <img src="/logo.png" alt="LIT-NUMIC" class="h-16 md:h-20 w-auto object-contain" />
+        <div class="mb-6 pt-2 px-2 flex justify-between items-center">
+            <a href="/dashboard" class="flex items-center gap-2 group">
+                <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-12 w-auto object-contain flex-shrink-0" />
+                <span class="text-xl font-black text-blue-800 tracking-tight font-fredoka leading-none">LIT-<span class="text-yellow-400">NUMIC</span></span>
             </a>
             <button class="lg:hidden p-2 text-gray-400 hover:bg-gray-100 rounded-xl transition-all" onclick={() => isSidebarOpen = false}>
                 <X size={24} />

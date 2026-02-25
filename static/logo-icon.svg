@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" fill="none">
+
+  <!-- === SPEECH BUBBLE BODY === -->
+  <rect x="10" y="6" width="180" height="145" rx="22" ry="22" fill="#FFE000" stroke="#2952CC" stroke-width="7"/>
+
+  <!-- === SPEECH BUBBLE TAIL === -->
+  <path d="M22,151 L22,186 L60,151 Z" fill="#FFE000" stroke="#2952CC" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="11" y="144" width="53" height="12" fill="#FFE000"/>
+
+  <!-- === OPEN BOOK === -->
+  <path d="M55,38 C52,34 60,30 70,32 L97,36 L97,122 L68,120 C58,119 52,115 52,108 Z"
+        fill="white" stroke="#2952CC" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M145,38 C148,34 140,30 130,32 L103,36 L103,122 L132,120 C142,119 148,115 148,108 Z"
+        fill="white" stroke="#2952CC" stroke-width="4.5" stroke-linejoin="round"/>
+  <line x1="100" y1="36" x2="100" y2="122" stroke="#2952CC" stroke-width="3"/>
+  <path d="M52,108 Q100,132 148,108" fill="none" stroke="#2952CC" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- === + (PLUS) === -->
+  <line x1="75" y1="58" x2="75" y2="102" stroke="#2952CC" stroke-width="7" stroke-linecap="round"/>
+  <line x1="53" y1="80" x2="97" y2="80" stroke="#2952CC" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- === × (TIMES) === -->
+  <line x1="113" y1="58" x2="141" y2="102" stroke="#2952CC" stroke-width="7" stroke-linecap="round"/>
+  <line x1="141" y1="58" x2="113" y2="102" stroke="#2952CC" stroke-width="7" stroke-linecap="round"/>
+</svg>
