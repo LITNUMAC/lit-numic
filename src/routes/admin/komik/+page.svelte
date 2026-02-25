@@ -60,17 +60,24 @@
     async function deleteComic(id) {
         if (confirm("⚠️ Hapus komik ini secara permanen? Seluruh soal terkait juga akan terhapus.")) {
             // Hapus record terkait terlebih dahulu (cascade manual)
-            await supabase.from('student_progress').delete().eq('comic_id', id);
-            await supabase.from('questions').delete().eq('comic_id', id);
-            await supabase.from('quiz_scores').delete().eq('comic_id', id);
+            const { error: e1 } = await supabase.from('student_progress').delete().eq('comic_id', id);
+            if (e1) console.warn('Hapus student_progress gagal (mungkin RLS):', e1.message);
+
+            const { error: e2 } = await supabase.from('questions').delete().eq('comic_id', id);
+            if (e2) console.warn('Hapus questions gagal (mungkin RLS):', e2.message);
+
+            const { error: e3 } = await supabase.from('quiz_scores').delete().eq('comic_id', id);
+            if (e3) console.warn('Hapus quiz_scores gagal (mungkin RLS):', e3.message);
 
             const { error } = await supabase.from('comics').delete().eq('id', id);
             if (!error) {
-                // Hapus cache agar list diperbarui
+                // Hapus comic dari list lokal langsung tanpa tunggu refetch
+                comics = comics.filter(c => c.id !== id);
+                // Hapus cache
                 setCached('comics', null);
-                await fetchComics();
             } else {
-                alert("Gagal menghapus: " + error.message);
+                console.error('Hapus komik gagal:', error);
+                alert("Gagal menghapus komik: " + error.message + "\n\nSolusi: Hapus dulu data terkait di Supabase atau tambahkan RLS policy DELETE untuk admin.");
             }
         }
     }

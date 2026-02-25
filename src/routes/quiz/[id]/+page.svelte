@@ -113,22 +113,27 @@
                });
 
                // --- UPDATE STREAK ---
-               // Ambil streak + last_activity_date dari profiles
-               const { data: profileData } = await supabase
+               const { data: profileData, error: profileError } = await supabase
                    .from('profiles')
-                   .select('streak, last_activity_date')
+                   .select('streak, last_active')
                    .eq('id', session.user.id)
                    .single();
 
-               if (profileData) {
-                   const today = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
-                   const last = profileData.last_activity_date;
-                   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-                   
+               if (profileError) {
+                   console.error('Gagal baca profil untuk streak:', profileError);
+               } else if (profileData) {
+                   // Pakai tanggal lokal WIB (UTC+7)
+                   const now = new Date();
+                   const today = new Date(now.getTime() + 7 * 60 * 60 * 1000).toISOString().slice(0, 10); // 'YYYY-MM-DD'
+                   const lastRaw = profileData.last_active ? new Date(profileData.last_active) : null;
+                   const last = lastRaw ? new Date(lastRaw.getTime() + 7 * 60 * 60 * 1000).toISOString().slice(0, 10) : null;
+                   const yesterday = new Date(now.getTime() + 7 * 60 * 60 * 1000 - 86400000).toISOString().slice(0, 10);
+
                    let newStreak = profileData.streak || 0;
-                   
+
                    if (last === today) {
                        // Sudah aktif hari ini — tidak ubah streak
+                       console.log('Streak: sudah aktif hari ini, tidak berubah.');
                    } else if (last === yesterday) {
                        // Aktif kemarin — tambah 1
                        newStreak = newStreak + 1;
@@ -137,12 +142,13 @@
                        newStreak = 1;
                    }
 
-                   await supabase.from('profiles').update({
+                   const { error: updateErr } = await supabase.from('profiles').update({
                        streak: newStreak,
-                       last_activity_date: today
+                       last_active: new Date().toISOString()
                    }).eq('id', session.user.id);
 
-                   console.log(`Streak diperbarui: ${profileData.streak} -> ${newStreak}`);
+                   if (updateErr) console.error('Gagal update streak:', updateErr);
+                   else console.log(`Streak diperbarui: ${profileData.streak} -> ${newStreak}`);
                }
                // --- SELESAI UPDATE STREAK ---
            }
