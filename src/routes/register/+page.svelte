@@ -48,8 +48,13 @@
 <div class="min-h-screen flex flex-col items-center justify-center bg-blue-50 px-4" style="font-family: 'Poppins', sans-serif;">
   
   <div class="text-center mb-8">
-    <img src="/logo_statis.svg" alt="LIT-NUMIC" class="h-36 w-auto mx-auto drop-shadow-md" />
-    <p class="text-sm text-blue-500/80 mt-1 italic" style="font-family: 'Dancing Script', cursive;">Literacy &amp; Numeracy Interactive Comic</p>
+    <div class="flex items-center justify-center gap-3">
+      <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-24 w-auto drop-shadow-md" />
+      <span class="text-4xl font-black tracking-tight font-fredoka leading-none">
+        <span class="text-blue-800">LIT-</span><span class="text-yellow-400" style="-webkit-text-stroke: 1px #2952CC;">NUMIC</span>
+      </span>
+    </div>
+    <p class="text-sm text-blue-500/80 mt-2 italic" style="font-family: 'Dancing Script', cursive;">Literacy &amp; Numeracy Interactive Comic</p>
   </div>
 
   <div class="w-full max-w-xs sm:max-w-sm md:max-w-md">
