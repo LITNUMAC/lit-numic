@@ -31,8 +31,8 @@
 <div class="min-h-screen flex flex-col items-center justify-center bg-blue-50 px-4" style="font-family: 'Poppins', sans-serif;">
   
   <div class="text-center mb-8">
-    <img src="/logo.svg" alt="LIT-NUMIC" class="h-36 w-auto mx-auto drop-shadow-md" />
-    <p class="text-base text-blue-600/70 mt-1 italic" style="font-family: 'Dancing Script', cursive;">Literacy &amp; Numeracy Interactive Comic</p>
+    <img src="/logo.png" alt="LIT-NUMIC" class="h-36 w-auto mx-auto drop-shadow-md" />
+    <p class="text-sm text-blue-500/80 mt-1 italic" style="font-family: 'Dancing Script', cursive;">Literacy &amp; Numeracy Interactive Comic</p>
   </div>
 
   <div class="w-full max-w-xs sm:max-w-sm md:max-w-md">

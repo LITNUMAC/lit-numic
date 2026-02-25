@@ -103,9 +103,8 @@
         {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:m-4 lg:rounded-[2.5rem] lg:h-[calc(100vh-2rem)] lg:shadow-xl lg:shadow-blue-900/5">
         
         <div class="mb-6 pt-2 px-2 flex justify-between items-center">
-            <a href="/dashboard" class="flex items-center gap-2 group">
-                <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-12 w-auto object-contain flex-shrink-0" />
-                <span class="text-xl font-black text-blue-800 tracking-tight font-fredoka leading-none">LIT-<span class="text-yellow-400">NUMIC</span></span>
+            <a href="/dashboard">
+                <img src="/logo.png" alt="LIT-NUMIC" class="h-14 w-auto object-contain" />
             </a>
             <button class="lg:hidden p-2 text-gray-400 hover:bg-gray-100 rounded-xl transition-all" onclick={() => isSidebarOpen = false}>
                 <X size={24} />
