@@ -104,7 +104,7 @@
         
         <div class="mb-6 pt-2 px-2 flex justify-between items-center">
             <a href="/dashboard">
-                <img src="/logo.png" alt="LIT-NUMIC" class="h-14 w-auto object-contain" />
+                <img src="/logo_statis.svg" alt="LIT-NUMIC" class="h-16 w-auto object-contain" />
             </a>
             <button class="lg:hidden p-2 text-gray-400 hover:bg-gray-100 rounded-xl transition-all" onclick={() => isSidebarOpen = false}>
                 <X size={24} />
