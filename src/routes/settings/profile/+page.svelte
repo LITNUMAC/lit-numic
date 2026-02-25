@@ -4,6 +4,7 @@
 
   import { Camera, Save, Image as ImageIcon, Trash2 } from 'lucide-svelte'; // Rename Image to ImageIcon to avoid conflict
   import { invalidateAll } from '$app/navigation';
+  import { t } from '$lib/i18n';
 
   let loading = false;
   let user = null;
@@ -222,7 +223,7 @@
 </script>
 
 <div class="w-full max-w-xl">
-  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">Profil Saya</h2>
+  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">{$t('settProfileTitle')}</h2>
 
   <!-- Avatar Section -->
   <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-10 text-center md:text-left">
@@ -293,8 +294,8 @@
       <!-- Default Avatars Removed (Moved to Setup) -->
       
       <p class="text-slate-400 text-sm font-medium mt-1">@{profile.username || 'username'}</p>
-      {#if !profile.username}<p class="text-xs text-red-400">*Username belum diatur</p>{/if}
-      <p class="text-[10px] text-gray-400 italic mt-1">*Upload foto max 50KB.</p>
+      {#if !profile.username}<p class="text-xs text-red-400">{$t('settUsernameNotSet')}</p>{/if}
+      <p class="text-[10px] text-gray-400 italic mt-1">{$t('settPhotoMax')}</p>
     </div>
   </div>
 
@@ -302,18 +303,18 @@
   <form onsubmit={(e) => { e.preventDefault(); updateProfile(); }} class="space-y-6">
     
     <div>
-      <label for="full_name" class="block text-sm font-bold text-slate-600 mb-2">Nama Lengkap</label>
+      <label for="full_name" class="block text-sm font-bold text-slate-600 mb-2">{$t('settFullName')}</label>
       <input 
         id="full_name"
         type="text" 
         bind:value={profile.full_name}
         class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
-        placeholder="Nama kamu..."
+        placeholder={$t('settFullNamePlaceholder')}
       />
     </div>
 
     <div>
-      <label for="username" class="block text-sm font-bold text-slate-600 mb-2">Username</label>
+      <label for="username" class="block text-sm font-bold text-slate-600 mb-2">{$t('settUsername')}</label>
       <div class="relative">
         <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">@</span>
         <input 
@@ -321,33 +322,33 @@
           type="text" 
           bind:value={profile.username}
           class="w-full pl-10 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
-          placeholder="username_keren"
+          placeholder={$t('settUsernamePlaceholder')}
         />
       </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
-        <label for="school_origin" class="block text-sm font-bold text-slate-600 mb-2">Sekolah</label>
+        <label for="school_origin" class="block text-sm font-bold text-slate-600 mb-2">{$t('settSchool')}</label>
         <input 
           id="school_origin"
           type="text" 
           bind:value={profile.school_origin}
           class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
-          placeholder="Nama Sekolah"
+          placeholder={$t('settSchoolPlaceholder')}
         />
       </div>
       <div>
-        <label for="class_select" class="block text-sm font-bold text-slate-600 mb-2">Kelas</label>
+        <label for="class_select" class="block text-sm font-bold text-slate-600 mb-2">{$t('settClass')}</label>
         <select 
           id="class_select"
           bind:value={profile.class}
           class="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all bg-white"
         >
-          <option value="">Pilih Kelas</option>
-          <option value="7">Kelas 7</option>
-          <option value="8">Kelas 8</option>
-          <option value="9">Kelas 9</option>
+          <option value="">{$t('settClassSelect')}</option>
+          <option value="7">{$t('settClass7')}</option>
+          <option value="8">{$t('settClass8')}</option>
+          <option value="9">{$t('settClass9')}</option>
         </select>
       </div>
     </div>
@@ -359,7 +360,7 @@
         class="w-full sm:w-auto px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold rounded-xl shadow-lg shadow-yellow-100 hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
       >
         <Save size={18} />
-        {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
+        {loading ? $t('settSaving') : $t('settSave')}
       </button>
     </div>
 

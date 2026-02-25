@@ -67,6 +67,48 @@ export const translations = {
     // --- Language Toggle ---
     langToggle: "🇬🇧 English",
     loading: "Memuat...",
+
+    // --- Settings: Profile ---
+    settProfileTitle: "Profil Saya",
+    settFullName: "Nama Lengkap",
+    settFullNamePlaceholder: "Nama kamu...",
+    settUsername: "Username",
+    settUsernamePlaceholder: "username_keren",
+    settSchool: "Sekolah",
+    settSchoolPlaceholder: "Nama Sekolah",
+    settClass: "Kelas",
+    settClassSelect: "Pilih Kelas",
+    settClass7: "Kelas 7",
+    settClass8: "Kelas 8",
+    settClass9: "Kelas 9",
+    settSave: "Simpan Perubahan",
+    settSaving: "Menyimpan...",
+    settUsernameNotSet: "*Username belum diatur",
+    settPhotoMax: "*Upload foto max 50KB.",
+
+    // --- Settings: Account ---
+    settAccountTitle: "Akun & Data",
+    settEmailTitle: "Email Terdaftar",
+    settEmailDesc: "Email ini digunakan untuk login dan pemulihan akun.",
+    settLangTitle: "Bahasa Tampilan",
+    settLangDesc: "Pilih bahasa yang digunakan di seluruh aplikasi.",
+    settLangSaved: "* Bahasa aktif disimpan otomatis.",
+    settDangerTitle: "Hapus Akun",
+    settDangerDesc:
+      "Menghapus akun Anda secara permanen. Tindakan ini tidak dapat dibatalkan.",
+    settDangerBtn: "Hapus Akun Saya",
+
+    // --- Settings: Security ---
+    settSecurityTitle: "Keamanan & Password",
+    settNewPass: "Password Baru",
+    settNewPassPlaceholder: "Minimal 6 karakter",
+    settConfirmPass: "Konfirmasi Password Baru",
+    settConfirmPassPlaceholder: "Ketik ulang password baru",
+    settChangePw: "Ubah Password",
+    settChangingPw: "Memproses...",
+    settPwMismatch: "Password baru dan konfirmasi tidak cocok!",
+    settPwTooShort: "Password minimal 6 karakter!",
+    settPwSuccess: "Password berhasil diubah!",
   },
 
   en: {
@@ -137,5 +179,47 @@ export const translations = {
     // --- Language Toggle ---
     langToggle: "🇮🇩 Indonesia",
     loading: "Loading...",
+
+    // --- Settings: Profile ---
+    settProfileTitle: "My Profile",
+    settFullName: "Full Name",
+    settFullNamePlaceholder: "Your name...",
+    settUsername: "Username",
+    settUsernamePlaceholder: "cool_username",
+    settSchool: "School",
+    settSchoolPlaceholder: "School Name",
+    settClass: "Class",
+    settClassSelect: "Select Class",
+    settClass7: "Grade 7",
+    settClass8: "Grade 8",
+    settClass9: "Grade 9",
+    settSave: "Save Changes",
+    settSaving: "Saving...",
+    settUsernameNotSet: "*Username not set yet",
+    settPhotoMax: "*Photo upload max 50KB.",
+
+    // --- Settings: Account ---
+    settAccountTitle: "Account & Data",
+    settEmailTitle: "Registered Email",
+    settEmailDesc: "This email is used for login and account recovery.",
+    settLangTitle: "Display Language",
+    settLangDesc: "Choose the language used across the app.",
+    settLangSaved: "* Active language is saved automatically.",
+    settDangerTitle: "Delete Account",
+    settDangerDesc:
+      "Permanently delete your account. This action cannot be undone.",
+    settDangerBtn: "Delete My Account",
+
+    // --- Settings: Security ---
+    settSecurityTitle: "Security & Password",
+    settNewPass: "New Password",
+    settNewPassPlaceholder: "At least 6 characters",
+    settConfirmPass: "Confirm New Password",
+    settConfirmPassPlaceholder: "Re-enter new password",
+    settChangePw: "Change Password",
+    settChangingPw: "Processing...",
+    settPwMismatch: "New password and confirmation do not match!",
+    settPwTooShort: "Password must be at least 6 characters!",
+    settPwSuccess: "Password changed successfully!",
   },
 };

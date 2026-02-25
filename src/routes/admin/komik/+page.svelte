@@ -59,9 +59,19 @@
 
     async function deleteComic(id) {
         if (confirm("⚠️ Hapus komik ini secara permanen? Seluruh soal terkait juga akan terhapus.")) {
+            // Hapus record terkait terlebih dahulu (cascade manual)
+            await supabase.from('student_progress').delete().eq('comic_id', id);
+            await supabase.from('questions').delete().eq('comic_id', id);
+            await supabase.from('quiz_scores').delete().eq('comic_id', id);
+
             const { error } = await supabase.from('comics').delete().eq('id', id);
-            if (!error) fetchComics();
-            else alert("Gagal menghapus: " + error.message);
+            if (!error) {
+                // Hapus cache agar list diperbarui
+                setCached('comics', null);
+                await fetchComics();
+            } else {
+                alert("Gagal menghapus: " + error.message);
+            }
         }
     }
 

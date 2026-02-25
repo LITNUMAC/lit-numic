@@ -1,6 +1,7 @@
 <script>
   import { supabase } from '$lib/supabaseClient';
   import { Lock, BadgeCheck } from 'lucide-svelte';
+  import { t } from '$lib/i18n';
 
   let newPassword = '';
   let confirmPassword = '';
@@ -10,13 +11,13 @@
 
   async function updatePassword() {
     if (newPassword !== confirmPassword) {
-        message = 'Password baru dan konfirmasi tidak cocok!';
+        message = $t('settPwMismatch');
         success = false;
         return;
     }
     
     if (newPassword.length < 6) {
-        message = 'Password minimal 6 karakter!';
+        message = $t('settPwTooShort');
         success = false;
         return;
     }
@@ -32,7 +33,7 @@
         message = 'Error: ' + error.message;
         success = false;
     } else {
-        message = 'Password berhasil diubah!';
+        message = $t('settPwSuccess');
         success = true;
         newPassword = '';
         confirmPassword = '';
@@ -42,19 +43,19 @@
 </script>
 
 <div class="w-full max-w-xl">
-  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">Keamanan &amp; Password</h2>
+  <h2 class="text-xl md:text-2xl font-bold text-blue-900 mb-5 font-fredoka border-b border-gray-100 pb-4">{$t('settSecurityTitle')}</h2>
 
   <form onsubmit={(e) => { e.preventDefault(); updatePassword(); }} class="space-y-6">
     
     <div class="relative">
-      <label for="new_password" class="block text-sm font-bold text-slate-600 mb-2">Password Baru</label>
+      <label for="new_password" class="block text-sm font-bold text-slate-600 mb-2">{$t('settNewPass')}</label>
       <div class="relative">
         <input 
           id="new_password"
           type="password" 
           bind:value={newPassword}
           class="w-full pl-11 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
-          placeholder="Minimal 6 karakter"
+          placeholder={$t('settNewPassPlaceholder')}
         />
         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <Lock size={18} />
@@ -63,14 +64,14 @@
     </div>
 
     <div>
-      <label for="confirm_password" class="block text-sm font-bold text-slate-600 mb-2">Konfirmasi Password Baru</label>
+      <label for="confirm_password" class="block text-sm font-bold text-slate-600 mb-2">{$t('settConfirmPass')}</label>
       <div class="relative">
         <input 
           id="confirm_password"
           type="password" 
           bind:value={confirmPassword}
           class="w-full pl-11 pr-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-300"
-          placeholder="Ketik ulang password baru"
+          placeholder={$t('settConfirmPassPlaceholder')}
         />
         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
             <BadgeCheck size={18} />
@@ -91,7 +92,7 @@
         disabled={loading}
         class="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1 active:scale-95 disabled:opacity-50"
       >
-        {loading ? 'Memproses...' : 'Ubah Password'}
+        {loading ? $t('settChangingPw') : $t('settChangePw')}
       </button>
     </div>
 

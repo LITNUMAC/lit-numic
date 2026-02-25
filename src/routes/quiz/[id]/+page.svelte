@@ -111,6 +111,40 @@
                    comic_id: comicId,
                    score: finalScore
                });
+
+               // --- UPDATE STREAK ---
+               // Ambil streak + last_activity_date dari profiles
+               const { data: profileData } = await supabase
+                   .from('profiles')
+                   .select('streak, last_activity_date')
+                   .eq('id', session.user.id)
+                   .single();
+
+               if (profileData) {
+                   const today = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+                   const last = profileData.last_activity_date;
+                   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+                   
+                   let newStreak = profileData.streak || 0;
+                   
+                   if (last === today) {
+                       // Sudah aktif hari ini — tidak ubah streak
+                   } else if (last === yesterday) {
+                       // Aktif kemarin — tambah 1
+                       newStreak = newStreak + 1;
+                   } else {
+                       // Lebih dari 1 hari tidak aktif — reset ke 1
+                       newStreak = 1;
+                   }
+
+                   await supabase.from('profiles').update({
+                       streak: newStreak,
+                       last_activity_date: today
+                   }).eq('id', session.user.id);
+
+                   console.log(`Streak diperbarui: ${profileData.streak} -> ${newStreak}`);
+               }
+               // --- SELESAI UPDATE STREAK ---
            }
         } else {
             alert("Sesi habis, silakan login lagi.");
