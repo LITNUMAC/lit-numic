@@ -153,7 +153,7 @@
 
         <div class="mt-auto pt-6 border-t border-gray-50 px-2 space-y-1">
             {#if profile}
-              <a href="/settings/profile" class="flex items-center gap-3 px-5 py-3.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
+              <a href={profile?.role === 'admin' ? '/admin/pengaturan' : '/settings/profile'} class="flex items-center gap-3 px-5 py-3.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
                   <Settings size={20} /> {$t('navSettings')}
               </a>
               <button onclick={() => showLogoutModal = true} class="w-full flex items-center gap-3 px-5 py-3.5 text-red-400 hover:bg-red-50 rounded-2xl transition-all font-medium">
