@@ -31,8 +31,8 @@
 <div class="min-h-screen flex flex-col items-center justify-center bg-blue-50 px-4" style="font-family: 'Poppins', sans-serif;">
   
   <div class="text-center mb-8">
-    <div class="flex items-center justify-center gap-3">
-      <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-24 w-auto drop-shadow-md" />
+    <div class="flex items-center justify-center gap-1">
+      <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-20 w-auto drop-shadow-md" />
       <span class="text-4xl font-black tracking-tight font-fredoka leading-none">
         <span class="text-blue-800">LIT-</span><span class="text-yellow-400" style="-webkit-text-stroke: 1px #2952CC;">NUMIC</span>
       </span>
