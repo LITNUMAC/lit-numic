@@ -215,7 +215,7 @@
         <a href="#kontak" class="hover:text-blue-600">Kontak</a>
       </div>
       <div class="text-gray-400 text-sm">
-        &copy; 2026 Litnumac. All rights reserved.
+        &copy; 2026 LIT-NUMIC. All rights reserved.
       </div>
     </div>
   </footer>
