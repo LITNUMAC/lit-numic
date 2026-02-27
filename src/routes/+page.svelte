@@ -28,9 +28,12 @@
   <!-- Dedicated Landing Navbar -->
   <nav class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 {isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}">
     <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <h1 class="text-2xl font-bold text-blue-800 font-fredoka">LIT-NUMIC<span class="text-yellow-400">.</span></h1>
-      </div>
+      <a href="/" class="flex items-center gap-1.5">
+        <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-8 md:h-9 w-auto object-contain flex-shrink-0" />
+        <span class="text-xl md:text-2xl font-black tracking-tight font-fredoka leading-none">
+          <span class="text-blue-800">LIT-</span><span class="text-yellow-400" style="-webkit-text-stroke: 1px #2952CC;">NUMIC</span>
+        </span>
+      </a>
 
       <!-- Desktop Nav -->
       <div class="hidden md:flex items-center gap-8">
@@ -200,7 +203,12 @@
 
   <footer class="bg-slate-50 py-12 px-6 border-t border-gray-200">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6" use:reveal={{ delay: 0 }}>
-      <div class="text-2xl font-bold text-blue-700 font-fredoka">LIT-NUMIC</div>
+      <a href="/" class="flex items-center gap-1.5">
+        <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-7 w-auto object-contain flex-shrink-0" />
+        <span class="text-lg font-black tracking-tight font-fredoka leading-none">
+          <span class="text-blue-700">LIT-</span><span class="text-yellow-400" style="-webkit-text-stroke: 1px #2952CC;">NUMIC</span>
+        </span>
+      </a>
       <div class="flex gap-8 text-gray-500 font-medium">
         <a href="#tentang" class="hover:text-blue-600">Tentang</a>
         <a href="#kebijakan" class="hover:text-blue-600">Kebijakan</a>
