@@ -1,39 +1,72 @@
 <script>
   import { supabase } from '$lib/supabaseClient';
-  import { goto } from '$app/navigation'; // PENTING: Untuk pindah halaman
+  import { goto } from '$app/navigation';
+  import { createRateLimiter, isValidEmail, validatePassword, sanitizeText } from '$lib/sanitize';
 
-  let email = '';
-  let password = '';
-  let loading = false;
-  let message = '';
+  let email = $state('');
+  let password = $state('');
+  let loading = $state(false);
+  let message = $state('');
+  let isLocked = $state(false);
+  let lockCountdown = $state(0);
 
-  // Fungsi DAFTAR BARU
+  // Rate limiter: 3 attempts per 120 seconds
+  const limiter = createRateLimiter(3, 120000);
+  let countdownInterval;
+
+  function startLockout() {
+    isLocked = true;
+    lockCountdown = limiter.getResetTime();
+    countdownInterval = setInterval(() => {
+      lockCountdown = limiter.getResetTime();
+      if (lockCountdown <= 0) {
+        isLocked = false;
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+  }
+
   const handleSignUp = async () => {
-    // 1. Validasi input
-    if (!email || !password) {
-        message = '❌ Email dan Password wajib diisi!';
-        return;
+    // Input validation
+    const cleanEmail = sanitizeText(email, 100).toLowerCase();
+    if (!cleanEmail || !password) {
+      message = '❌ Email dan Password wajib diisi!';
+      return;
+    }
+    if (!isValidEmail(cleanEmail)) {
+      message = '❌ Format email tidak valid.';
+      return;
+    }
+    const pwCheck = validatePassword(password);
+    if (!pwCheck.valid) {
+      message = '❌ ' + pwCheck.message;
+      return;
+    }
+
+    // Rate limit check
+    if (!limiter.canAttempt()) {
+      startLockout();
+      message = `⏳ Terlalu banyak percobaan. Coba lagi dalam ${lockCountdown} detik.`;
+      return;
     }
 
     loading = true;
     message = '';
-    
-    // 2. Daftar ke Supabase (Cuma Email & Pass)
+    limiter.recordAttempt();
+
     const { data, error } = await supabase.auth.signUp({
-      email: email,
+      email: cleanEmail,
       password: password,
-      // Metadata nama dikosongkan dulu, nanti diisi di halaman /setup
     });
 
     if (error) {
-      message = '❌ ' + error.message;
+      const remaining = limiter.getRemaining();
+      message = `❌ ${error.message} (${remaining} percobaan tersisa)`;
+      if (remaining <= 0) startLockout();
     } else {
-      // 3. LOGIKA REDIRECT (PENTING!)
-      // Jika berhasil daftar, langsung arahkan ke halaman Setup Profile
       if (data.session) {
-        goto('/setup'); 
+        goto('/setup');
       } else {
-        // Jika butuh verifikasi email dulu
         message = '✅ Akun berhasil dibuat! Cek email untuk verifikasi.';
       }
     }
@@ -78,10 +111,17 @@
 
     <button 
         onclick={handleSignUp} 
-        disabled={loading} 
-        class="w-full py-2 md:py-3 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={loading || isLocked} 
+        class="w-full py-2 md:py-3 rounded-full font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105 disabled:opacity-60 disabled:hover:scale-100
+        {isLocked ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-yellow-400 hover:bg-yellow-500 text-white'}"
     >
-      {loading ? 'Proses...' : 'Buat Akun'}
+      {#if isLocked}
+        🔒 Tunggu {lockCountdown} detik...
+      {:else if loading}
+        Proses...
+      {:else}
+        Buat Akun
+      {/if}
     </button>
 
     <div class="text-center mt-4">

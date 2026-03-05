@@ -1,24 +1,64 @@
 <script>
   import { supabase } from '$lib/supabaseClient';
+  import { createRateLimiter, isValidEmail, sanitizeText } from '$lib/sanitize';
 
-  let email = '';
-  let password = '';
-  let loading = false;
-  let message = '';
+  let email = $state('');
+  let password = $state('');
+  let loading = $state(false);
+  let message = $state('');
+  let isLocked = $state(false);
+  let lockCountdown = $state(0);
+
+  // Rate limiter: 5 attempts per 60 seconds
+  const limiter = createRateLimiter(5, 60000);
+  let countdownInterval;
+
+  function startLockout() {
+    isLocked = true;
+    lockCountdown = limiter.getResetTime();
+    countdownInterval = setInterval(() => {
+      lockCountdown = limiter.getResetTime();
+      if (lockCountdown <= 0) {
+        isLocked = false;
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+  }
 
   const handleLogin = async () => {
+    // Input validation
+    const cleanEmail = sanitizeText(email, 100).toLowerCase();
+    if (!isValidEmail(cleanEmail)) {
+      message = '❌ Format email tidak valid.';
+      return;
+    }
+    if (!password || password.length < 1) {
+      message = '❌ Password wajib diisi.';
+      return;
+    }
+
+    // Rate limit check
+    if (!limiter.canAttempt()) {
+      startLockout();
+      message = `⏳ Terlalu banyak percobaan. Coba lagi dalam ${lockCountdown} detik.`;
+      return;
+    }
+
     loading = true;
     message = '';
+    limiter.recordAttempt();
 
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
+      email: cleanEmail,
       password: password,
     });
 
     if (error) {
-      message = '❌ Email atau Password salah.';
+      const remaining = limiter.getRemaining();
+      message = `❌ Email atau Password salah. (${remaining} percobaan tersisa)`;
+      if (remaining <= 0) startLockout();
     } else {
-        window.location.href = '/dashboard'; 
+      window.location.href = '/dashboard';
     }
     loading = false;
   };
@@ -60,10 +100,17 @@
 
     <button 
         onclick={handleLogin} 
-        disabled={loading} 
-        class="w-full py-2 md:py-3 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105"
+        disabled={loading || isLocked} 
+        class="w-full py-2 md:py-3 rounded-full font-bold text-base md:text-lg shadow-md transition-all transform hover:scale-105 disabled:opacity-60 disabled:hover:scale-100
+        {isLocked ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-yellow-400 hover:bg-yellow-500 text-white'}"
     >
-      {loading ? 'Memuat...' : 'Login Masuk'}
+      {#if isLocked}
+        🔒 Tunggu {lockCountdown} detik...
+      {:else if loading}
+        Memuat...
+      {:else}
+        Login Masuk
+      {/if}
     </button>
 
     <div class="text-center mt-4">
