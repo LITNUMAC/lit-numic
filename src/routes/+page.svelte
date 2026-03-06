@@ -2,9 +2,14 @@
   import { fade, fly, slide } from 'svelte/transition';
   import { reveal } from '$lib/actions/reveal';
   import { Lock, Shuffle, CheckCircle, Smartphone, Rocket, Menu, X } from 'lucide-svelte';
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   
   const { profile, user, loadingProfile } = getContext('appState');
+
+  // Load lottie-player dynamically (SSR-safe, no CDN dependency)
+  onMount(async () => {
+    await import('@lottiefiles/lottie-player');
+  });
 
   let isMobileMenuOpen = $state(false);
   let isScrolled = $state(false);
@@ -19,7 +24,6 @@
 
 <svelte:head>
   <title>LIT-NUMIC - Belajar Literasi & Numerasi</title>
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
