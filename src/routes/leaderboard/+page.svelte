@@ -57,7 +57,7 @@
         </div>
     </header>
 
-    {#if loading || loadingProfile}
+    {#if loading || appState.loadingProfile}
       <div class="flex justify-center py-20">
           <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
       </div>
@@ -122,9 +122,9 @@
           
           <div class="divide-y divide-gray-50 overflow-x-auto">
               {#each leaderboardData.slice(3) as userEntry, index}
-                  <div class="flex items-center px-3 md:px-6 py-3 md:py-4 hover:bg-blue-50/30 transition-colors {user?.id === userEntry.id ? 'bg-yellow-50/50 relative overflow-hidden' : ''}">
+                  <div class="flex items-center px-3 md:px-6 py-3 md:py-4 hover:bg-blue-50/30 transition-colors {appState.user?.id === userEntry.id ? 'bg-yellow-50/50 relative overflow-hidden' : ''}">
                       
-                      {#if user?.id === userEntry.id}
+                      {#if appState.user?.id === userEntry.id}
                           <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-400"></div>
                       {/if}
                       
@@ -137,7 +137,7 @@
                           <div class="min-w-0">
                               <h4 class="font-bold text-gray-800 text-xs md:text-sm flex items-center gap-1 md:gap-2 truncate">
                                   {userEntry.full_name} 
-                                  {#if user?.id === userEntry.id}
+                                  {#if appState.user?.id === userEntry.id}
                                       <span class="text-[9px] bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider shrink-0">Kamu</span>
                                   {/if}
                               </h4>
