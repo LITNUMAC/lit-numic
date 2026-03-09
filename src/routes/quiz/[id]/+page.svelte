@@ -326,6 +326,18 @@
                         {/each}
                         <button onclick={() => window.location.href = '/dashboard'} class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Kembali ke Dashboard</button>
                     </div>
+                {:else}
+                    <!-- Fallback: No questions exist -->
+                    <div in:fade class="w-full text-center space-y-4 py-12">
+                        <div class="mx-auto bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center">
+                            <Info size={40} class="text-blue-500" />
+                        </div>
+                        <h2 class="text-2xl font-black text-blue-900 font-fredoka mt-4">Belum Ada Soal!</h2>
+                        <p class="text-gray-600 font-medium">Tantangan untuk komik ini sedang disiapkan oleh Admin.<br/>Silakan kembali lagi nanti ya!</p>
+                        <button onclick={() => window.location.href = '/komik'} class="mt-8 px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md">
+                            Kembali ke Daftar Komik
+                        </button>
+                    </div>
                 {/if}
 
             </div>

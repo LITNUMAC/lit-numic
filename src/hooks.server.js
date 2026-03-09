@@ -7,7 +7,8 @@ export async function handle({ event, resolve }) {
   // Content Security Policy — whitelist Supabase, Google Fonts, DiceBear, and allow SvelteKit inline styles/scripts
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com",
+    "worker-src 'self' blob: https://unpkg.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https://*.supabase.co https://api.dicebear.com https://*.supabase.in",

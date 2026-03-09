@@ -47,7 +47,7 @@
     }
 
     const [comicsRes, progressRes] = await Promise.all([
-      supabase.from('comics').select('*'),
+      supabase.from('comics').select('*').eq('status', 'active'),
       supabase.from('student_progress').select('*').eq('user_id', activeUser.id)
     ]);
 
