@@ -48,6 +48,14 @@
       user = session.user;
       const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
       if (data) {
+        // Enforce Setup Flow for new/incomplete users (except if they are already on /setup or logging out)
+        if (!data.full_name || !data.class) {
+           if ($page.url.pathname !== '/setup') {
+               window.location.href = '/setup';
+               return; // Hentikan eksekusi lain agar redirect berjalan mulus
+           }
+        }
+
         // Cache bust avatar
         let freshAvatarUrl = data.avatar_url;
         if (freshAvatarUrl) {

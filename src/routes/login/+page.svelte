@@ -58,7 +58,18 @@
       message = `❌ Email atau Password salah. (${remaining} percobaan tersisa)`;
       if (remaining <= 0) startLockout();
     } else {
-      window.location.href = '/dashboard';
+      // Check if profile is complete
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, class')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      if (!profile || !profile.full_name || !profile.class) {
+        window.location.href = '/setup';
+      } else {
+        window.location.href = '/dashboard';
+      }
     }
     loading = false;
   };
