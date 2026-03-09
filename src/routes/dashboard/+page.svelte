@@ -107,9 +107,9 @@
     console.log('onMount jalan...');
 
     // If context user is already available, fetch immediately
-    if (user) {
-        console.log('Context user ready:', user.id);
-        resolvedUser = user;
+    if (appState.user) {
+        console.log('Context user ready:', appState.user.id);
+        resolvedUser = appState.user;
         await fetchData();
     } else {
         // Context hasn't resolved yet — fallback to direct Supabase auth
@@ -130,7 +130,7 @@
 
   // Auth Watcher: re-fetch when context user becomes available after mount
   $effect(() => {
-    const ctxUser = user;
+    const ctxUser = appState.user;
     if (ctxUser && !fetchedOnce) {
         console.log('Auth Watcher: user available:', ctxUser.id);
         resolvedUser = ctxUser;
@@ -198,7 +198,7 @@
         </div>
     {:else}
         <div class="mb-6 md:mb-10">
-            <h2 class="text-2xl md:text-3xl font-bold text-blue-900 font-fredoka">{$t('dashGreeting')} {profile?.full_name || user?.email?.split('@')[0] || "Teman"}! </h2>
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-900 font-fredoka">{$t('dashGreeting')} {appState.profile?.full_name || appState.user?.email?.split('@')[0] || "Teman"}! </h2>
             <p class="text-blue-400 font-medium text-xs md:text-sm">{$t('dashSubtitle')}</p>
         </div>
         
@@ -274,16 +274,16 @@
                     <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-2 shadow-inner">
                         <span class="text-orange-500 scale-125"><Flame size={32} /></span>
                     </div>
-                    <p class="text-[11px] font-black text-orange-500 uppercase tracking-widest mb-1">{(profile?.streak || 0)} HARI STREAK!</p>
+                    <p class="text-[11px] font-black text-orange-500 uppercase tracking-widest mb-1">{(appState.profile?.streak || 0)} HARI STREAK!</p>
                     <h3 class="text-xs font-bold text-gray-400 uppercase">Konsistensi Belajar</h3>
                 </div>
                 
                 <div class="w-full px-4 py-6 relative">
                     <div class="absolute top-1/2 left-4 right-4 h-2 bg-gray-100 -translate-y-1/2 rounded-full"></div>
-                    <div class="absolute top-1/2 left-4 h-2 bg-gradient-to-r from-orange-400 to-orange-600 -translate-y-1/2 rounded-full transition-all duration-700" style="width: {Math.max(0, (( ((profile?.streak || 0) - 1) % 5 ) / 4) * 100)}%"></div>
+                    <div class="absolute top-1/2 left-4 h-2 bg-gradient-to-r from-orange-400 to-orange-600 -translate-y-1/2 rounded-full transition-all duration-700" style="width: {Math.max(0, (( ((appState.profile?.streak || 0) - 1) % 5 ) / 4) * 100)}%"></div>
                     <div class="relative flex justify-between w-full">
                         {#each Array(5) as _, i}
-                            <div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full border-4 transition-all duration-500 z-10 { ((profile?.streak || 0) % 5 || ((profile?.streak || 0) > 0 ? 5 : 0)) > i ? 'bg-orange-500 border-orange-100 scale-125 shadow-md shadow-orange-200' : 'bg-white border-gray-100' }"></div></div>
+                            <div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full border-4 transition-all duration-500 z-10 { ((appState.profile?.streak || 0) % 5 || ((appState.profile?.streak || 0) > 0 ? 5 : 0)) > i ? 'bg-orange-500 border-orange-100 scale-125 shadow-md shadow-orange-200' : 'bg-white border-gray-100' }"></div></div>
                         {/each}
                     </div>
                 </div>
