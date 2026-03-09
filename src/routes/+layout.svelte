@@ -130,7 +130,7 @@
               <a href="/admin/user" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/admin/user') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
                 <Users size={20} /> {$t('navAdminUser')}
               </a>
-            {:else if profile}
+            {:else if user}
               <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">{$t('menuSiswa')}</p>
               <a href="/dashboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/dashboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
                 <Home size={20} /> {$t('navDashboard')}
@@ -140,14 +140,6 @@
               </a>
               <a href="/leaderboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/leaderboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
                 <Trophy size={20} /> {$t('navLeaderboard')}
-              </a>
-            {:else if user}
-              <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">Menu</p>
-              <a href="/dashboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/dashboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                <Home size={20} /> {$t('navDashboard')}
-              </a>
-              <a href="/komik" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/komik') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
-                <BookOpen size={20} /> Komik
               </a>
             {:else if !loadingProfile}
               <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">{$t('menuNav')}</p>
@@ -164,7 +156,7 @@
         </nav>
 
         <div class="mt-auto pt-6 border-t border-gray-50 px-2 space-y-1">
-            {#if profile}
+            {#if user}
               <a href={profile?.role === 'admin' ? '/admin/pengaturan' : '/settings/profile'} class="flex items-center gap-3 px-5 py-3.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
                   <Settings size={20} /> {$t('navSettings')}
               </a>
