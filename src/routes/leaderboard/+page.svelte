@@ -5,7 +5,7 @@
     import { Trophy, Flame, Crown, EyeOff, UserX } from 'lucide-svelte';
     import { getCached, setCached } from '$lib/cache';
 
-    const { profile, user, loadingProfile } = getContext('appState');
+    const appState = getContext('appState');
 
     let loading = $state(true);
     let leaderboardData = $state([]);

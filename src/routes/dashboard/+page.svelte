@@ -6,9 +6,8 @@
   import { t } from '$lib/i18n';
   // Cache import disabled for emergency debug
 
-  const { profile, user, loadingProfile } = getContext('appState');
+  const appState = getContext('appState');
 
-  // Local fallback user — populated from direct Supabase auth if context is slow
   let resolvedUser = $state(null);
   let fetchedOnce = $state(false);
 
@@ -23,14 +22,12 @@
       cover_url: "" 
   });
 
-  // Explicit stats variables for UI mapping
   let totalKoleksi = $state(0);
   let sedangDibaca = $state(0);
   let sudahSelesai = $state(0);
 
-  // Helper: get the best available user object
   function getActiveUser() {
-    return user ?? resolvedUser;
+    return appState.user ?? resolvedUser;
   }
 
   async function updateStreakInDB(userId, newStreak) {

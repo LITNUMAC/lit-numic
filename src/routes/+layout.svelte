@@ -37,6 +37,7 @@
     $page.url.pathname.startsWith('/admin') || 
     $page.url.pathname.startsWith('/dashboard') || 
     $page.url.pathname.startsWith('/leaderboard') || 
+    $page.url.pathname.startsWith('/komik') || 
     $page.url.pathname.startsWith('/settings')
   );
 
@@ -133,6 +134,9 @@
               <p class="text-[10px] font-black text-gray-400 mb-4 px-4 uppercase tracking-[0.2em]">{$t('menuSiswa')}</p>
               <a href="/dashboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/dashboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
                 <Home size={20} /> {$t('navDashboard')}
+              </a>
+              <a href="/komik" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/komik') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
+                <BookOpen size={20} /> Komik
               </a>
               <a href="/leaderboard" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all {isActive('/leaderboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 font-bold' : 'text-gray-500 hover:bg-blue-50 hover:text-blue-600'}">
                 <Trophy size={20} /> {$t('navLeaderboard')}

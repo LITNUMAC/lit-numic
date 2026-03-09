@@ -4,7 +4,7 @@
   import { Lock, Shuffle, CheckCircle, Smartphone, Rocket, Menu, X } from 'lucide-svelte';
   import { getContext, onMount } from 'svelte';
   
-  const { profile, user, loadingProfile } = getContext('appState');
+  const appState = getContext('appState');
 
   // Load lottie-player dynamically (SSR-safe, no CDN dependency)
   onMount(async () => {
@@ -47,7 +47,7 @@
         
         <div class="h-6 w-px bg-gray-200"></div>
 
-        {#if user}
+        {#if appState.user}
           <a href="/dashboard" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all text-xs">
             DASHBOARD
           </a>
@@ -74,7 +74,7 @@
         <a href="#fitur" onclick={() => isMobileMenuOpen = false} class="text-lg font-bold text-gray-800">Fitur</a>
         <a href="#cara-kerja" onclick={() => isMobileMenuOpen = false} class="text-lg font-bold text-gray-800">Cara Kerja</a>
         <hr class="border-gray-50">
-        {#if user}
+        {#if appState.user}
           <a href="/dashboard" class="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl text-center">DASHBOARD</a>
         {:else}
           <a href="/login" class="w-full py-4 text-center font-bold text-blue-600 border border-blue-100 rounded-2xl">LOGIN</a>
