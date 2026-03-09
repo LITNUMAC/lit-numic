@@ -40,25 +40,17 @@
   }
 
   async function fetchData() {
-    console.log('fetchData started...');
     const activeUser = getActiveUser();
     if (!activeUser) {
-        console.log('Menunggu status login... (user masih null)');
         loading = false;
         return;
     }
-    console.log('User detected:', activeUser.id);
 
-    // EMERGENCY DIRECT TEST: Strip all complexity
-    console.log('Mencoba ambil komik...');
-    const comicsRes = await supabase.from('comics').select('*');
-    console.log('TEST KOMIK:', comicsRes);
+    const [comicsRes, progressRes] = await Promise.all([
+      supabase.from('comics').select('*'),
+      supabase.from('student_progress').select('*').eq('user_id', activeUser.id)
+    ]);
 
-    console.log('Mencoba ambil progres membaca...');
-    const progressRes = await supabase.from('student_progress').select('*').eq('user_id', activeUser.id);
-    console.log('TEST PROGRES:', progressRes);
-
-    // Map data to state
     const allComics = comicsRes.data || [];
     const userProgress = progressRes.data || [];
 
@@ -97,30 +89,21 @@
     totalKoleksi = Number(allComics.length);
     sedangDibaca = foundLastRead ? 1 : 0;
     sudahSelesai = Number(newComics.completed.length);
-
-    console.log('Update UI dengan data:', { totalKoleksi, sedangDibaca, sudahSelesai });
-    console.log('AKHIR FETCH - Koleksi:', totalKoleksi);
     loading = false;
   }
 
   onMount(async () => {
-    console.log('onMount jalan...');
-
     // If context user is already available, fetch immediately
     if (appState.user) {
-        console.log('Context user ready:', appState.user.id);
         resolvedUser = appState.user;
         await fetchData();
     } else {
         // Context hasn't resolved yet — fallback to direct Supabase auth
-        console.log('Context user null, trying supabase.auth.getUser()...');
         const { data } = await supabase.auth.getUser();
         if (data?.user) {
-            console.log('Fallback auth success:', data.user.id);
             resolvedUser = data.user;
             await fetchData();
         } else {
-            console.warn('No authenticated user found. Cannot load dashboard.');
             loading = false;
         }
     }
@@ -132,7 +115,6 @@
   $effect(() => {
     const ctxUser = appState.user;
     if (ctxUser && !fetchedOnce) {
-        console.log('Auth Watcher: user available:', ctxUser.id);
         resolvedUser = ctxUser;
         fetchedOnce = true;
         fetchData();
