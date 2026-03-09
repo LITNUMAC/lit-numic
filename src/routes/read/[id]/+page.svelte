@@ -1,8 +1,10 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, getContext } from 'svelte';
   import { page } from '$app/stores';
   import { supabase } from '$lib/supabaseClient';
   import { ArrowLeft, Target, Lock, Zap, CheckCircle } from 'lucide-svelte';
+
+  const appState = getContext('appState');
 
   let comicId = $page.params.id;
   let user = null;
@@ -21,10 +23,15 @@
 
   async function initReader() {
     try {
-      // 1. Ambil User dulu
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return; // Kalau ga login, ga bisa simpan progress
-      user = session.user;
+      // 1. Ambil User dulu dari appState atau session
+      let activeUser = appState.user;
+      if (!activeUser) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) activeUser = session.user;
+      }
+      
+      if (!activeUser) return; // Kalau ga login, ga bisa simpan progress
+      user = activeUser;
 
       const pdfjsDist = await import('pdfjs-dist');
       pdfjs = pdfjsDist;
@@ -51,10 +58,13 @@
 
   // Ambil progress terakhir biar bisa resume (Opsional, tapi bagus buat UX)
   async function fetchPreviousProgress() {
+      const activeUser = appState.user || user;
+      if (!activeUser) return;
+
       const { data } = await supabase
         .from('student_progress')
         .select('last_read_page, is_completed')
-        .eq('user_id', user.id)
+        .eq('user_id', activeUser.id)
         .eq('comic_id', comicId)
         .single();
       
@@ -110,7 +120,8 @@
 
   // Fungsi simpan ke Supabase
   async function saveProgressToDB() {
-    if (!user || !comic) return;
+    const activeUser = appState.user || user;
+    if (!activeUser || !comic) return;
 
     // Pastikan halaman tidak melebihi total halaman (Safety check)
     const safePage = Math.min(currentPage, pages.length || 1);
@@ -118,7 +129,7 @@
     const { error } = await supabase
         .from('student_progress')
         .upsert({
-            user_id: user.id,
+            user_id: activeUser.id,
             comic_id: comic.id,
             last_read_page: safePage, 
             is_completed: isUnlocked,

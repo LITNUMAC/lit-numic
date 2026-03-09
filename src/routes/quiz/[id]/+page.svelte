@@ -1,9 +1,11 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, getContext } from 'svelte';
     import { page } from '$app/stores';
     import { supabase } from '$lib/supabaseClient';
     import { fly, fade } from 'svelte/transition';
-  import { Info, PenTool, Rocket, CheckCircle, XCircle, Lightbulb, ChevronRight } from 'lucide-svelte';
+  import { Info, PenTool, Rocket, CheckCircle, XCircle, Lightbulb, ChevronRight, Lock } from 'lucide-svelte';
+
+    const appState = getContext('appState');
 
     let comicId = $page.params.id;
     let loading = true;
@@ -78,20 +80,21 @@
     }
 
     async function submitQuiz() {
+        if (!appState.user) {
+            alert("Kamu harus login untuk menyimpan nilai kuis.");
+            return;
+        }
+
         loading = true;
         finalScore = calculateScore();
-        console.log("Mencoba mengirim nilai:", finalScore); 
-
-        const { data: { session } } = await supabase.auth.getSession();
         
-        if (session) {
-           console.log("User ID:", session.user.id); 
-           console.log("Comic ID:", comicId);       
+        const userId = appState.user.id;
+
 
            const { data, error } = await supabase
             .from('student_progress')
             .upsert({ 
-              user_id: session.user.id, 
+              user_id: userId, 
               comic_id: comicId, 
               is_completed: true,
               score: finalScore,
@@ -107,7 +110,7 @@
 
                // --- TAMBAHAN: Simpan ke quiz_scores untuk statistik ---
                await supabase.from('quiz_scores').insert({
-                   user_id: session.user.id,
+                   user_id: userId,
                    comic_id: comicId,
                    score: finalScore
                });
@@ -116,7 +119,7 @@
                const { data: profileData, error: profileError } = await supabase
                    .from('profiles')
                    .select('streak, last_active')
-                   .eq('id', session.user.id)
+                   .eq('id', userId)
                    .single();
 
                if (profileError) {
@@ -145,16 +148,13 @@
                    const { error: updateErr } = await supabase.from('profiles').update({
                        streak: newStreak,
                        last_active: new Date().toISOString()
-                   }).eq('id', session.user.id);
+                   }).eq('id', userId);
 
                    if (updateErr) console.error('Gagal update streak:', updateErr);
-                   else console.log(`Streak diperbarui: ${profileData.streak} -> ${newStreak}`);
+                   // else console.log(`Streak diperbarui: ${profileData.streak} -> ${newStreak}`);
                }
                // --- SELESAI UPDATE STREAK ---
            }
-        } else {
-            alert("Sesi habis, silakan login lagi.");
-        }
 
         loading = false;
         isReviewMode = true; 
