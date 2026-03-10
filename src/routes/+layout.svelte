@@ -49,12 +49,13 @@
       const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
       console.log('Status Profil:', data);
       
-      // Profile Guard: Jika user ada tapi profile null (belum registrasi profil) atau belum lengkap
-      if (!data || !data.full_name || !data.class) {
-         if ($page.url.pathname !== '/setup') {
-             window.location.href = '/setup';
-             return; // Hentikan eksekusi lain agar redirect berjalan mulus
-         }
+      // Bypass guard jika kita memang sudah ada di halaman setup, supaya tidak redirect terus & bisa ngisi
+      if ($page.url.pathname === '/setup') {
+          console.log('Bypass Setup Guard: Sedang berada di halaman /setup');
+      } else if (!data || !data.full_name || !data.class) {
+         // Profile Guard: Jika user ada tapi profile null (belum registrasi profil) atau belum lengkap
+         window.location.href = '/setup';
+         return; // Hentikan eksekusi lain agar redirect berjalan mulus
       }
 
       if (data) {

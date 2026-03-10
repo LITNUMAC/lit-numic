@@ -11,7 +11,7 @@ export async function handle({ event, resolve }) {
     "worker-src 'self' blob: https://unpkg.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: blob: https://*.supabase.co https://api.dicebear.com https://*.supabase.in https://flagcdn.com",
+    "img-src 'self' data: blob: https://*.supabase.co https://api.dicebear.com https://*.supabase.in https://flagcdn.com https://www.transparenttextures.com",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.supabase.in",
     "media-src 'self' https://*.supabase.co blob:",
     "frame-ancestors 'none'",

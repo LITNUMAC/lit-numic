@@ -37,10 +37,11 @@
   const finishSetup = async () => {
     loading = true;
     
-    // Update tabel profiles
-    const { error } = await supabase
+    // Upsert tabel profiles agar bisa buat baru kalau ID belum ada
+    const { error, data } = await supabase
       .from('profiles')
-      .update({
+      .upsert({
+        id: user.id,
         full_name: formData.fullName,
         username: formData.username,
         school_origin: formData.sekolah,
@@ -51,10 +52,10 @@
             : "https://api.dicebear.com/9.x/pixel-art/svg?seed=Christopher",
         level: 1,
         xp: 0
-      })
-      .eq('id', user.id);
+      });
 
     if (error) {
+      console.error('Gagal Simpan:', error.message);
       alert("Gagal menyimpan: " + error.message);
     } else {
       window.location.href = '/dashboard';
