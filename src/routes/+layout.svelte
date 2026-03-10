@@ -47,6 +47,8 @@
     if (session) {
       user = session.user;
       const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+      console.log('Status Profil:', data);
+      
       // Profile Guard: Jika user ada tapi profile null (belum registrasi profil) atau belum lengkap
       if (!data || !data.full_name || !data.class) {
          if ($page.url.pathname !== '/setup') {

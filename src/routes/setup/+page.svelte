@@ -57,7 +57,7 @@
     if (error) {
       alert("Gagal menyimpan: " + error.message);
     } else {
-      goto('/dashboard');
+      window.location.href = '/dashboard';
     }
     loading = false;
   };
