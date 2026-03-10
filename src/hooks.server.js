@@ -20,7 +20,8 @@ export async function handle({ event, resolve }) {
     "object-src 'none'",
   ].join("; ");
 
-  response.headers.set("Content-Security-Policy", csp);
+  // Temporarily disable CSP to isolate the 404 immutable module error
+  // response.headers.set("Content-Security-Policy", csp);
 
   // Prevent clickjacking
   response.headers.set("X-Frame-Options", "DENY");
