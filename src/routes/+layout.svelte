@@ -46,19 +46,26 @@
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       user = session.user;
-      const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-      console.log('Status Profil:', data);
-      
-      // Bypass guard jika kita memang sudah ada di halaman setup, supaya tidak redirect terus & bisa ngisi
-      if ($page.url.pathname === '/setup') {
-          console.log('Bypass Setup Guard: Sedang berada di halaman /setup');
-      } else if (!data || !data.full_name || !data.class) {
-         // Profile Guard: Jika user ada tapi profile null (belum registrasi profil) atau belum lengkap
-         window.location.href = '/setup';
-         return; // Hentikan eksekusi lain agar redirect berjalan mulus
-      }
+      try {
+        const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+        
+        if (error) {
+           console.error('Error fetching profile:', error);
+        }
+        
+        console.log('Status Profil:', data);
+        
+        // Bypass guard jika di auth pages (whitelist)
+        const isAuthPage = ['/login', '/register', '/setup'].includes($page.url.pathname);
+        if (isAuthPage) {
+            console.log(`Bypass Setup Guard: Sedang berada di ${$page.url.pathname}`);
+        } else if (!data || !data.full_name || !data.class) {
+           // Profile Guard: Jika user ada tapi profile null (belum registrasi profil) atau belum lengkap
+           window.location.href = '/setup';
+           return; // Hentikan eksekusi lain agar redirect berjalan mulus
+        }
 
-      if (data) {
+        if (data) {
         // Cache bust avatar
         let freshAvatarUrl = data.avatar_url;
         if (freshAvatarUrl) {
@@ -66,6 +73,9 @@
           freshAvatarUrl = `${freshAvatarUrl}${separator}t=${new Date().getTime()}`;
         }
         profile = { ...data, avatar_url: freshAvatarUrl };
+      }
+      } catch (err) {
+        console.error('Catch Error Profile Fetch:', err);
       }
     }
     loadingProfile = false;
