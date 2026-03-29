@@ -256,7 +256,7 @@
 </div>
 {:else}
   <!-- Clean Wrapper For Landing / Auth / Reader Pages -->
-  <div class="w-full min-h-screen relative font-poppins overflow-x-hidden bg-white">
+  <div class="w-full min-h-screen relative font-poppins bg-white">
       {@render children()}
   </div>
 {/if}
@@ -280,16 +280,6 @@
 {/if}
 
 <style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
   .font-fredoka { font-family: 'Fredoka', sans-serif; }
   .font-poppins { font-family: 'Poppins', sans-serif; }
-  
-  /* Prevent scroll jumping when layout is fixed */
-  :global(html) {
-      scrollbar-gutter: stable;
-  }
 </style>

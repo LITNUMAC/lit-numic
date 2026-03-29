@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 /* 0. GLOBAL LAYOUT (RESPONSIVE) */
-html,
+html {
+  min-height: 100vh;
+}
 body {
   margin: 0;
   padding: 0;
