@@ -103,8 +103,9 @@
 </svelte:head>
 
 <!-- Global App Container (Responsive) -->
-<div class="w-full min-h-screen bg-[#F8FAFC] overflow-x-hidden">
-  <div class="w-full min-h-screen flex text-slate-800 relative font-poppins">
+{#if isAppRoute && !isReaderOrQuiz}
+<div class="w-full h-screen bg-[#F8FAFC] overflow-hidden">
+  <div class="w-full h-screen flex text-slate-800 relative font-poppins">
     
     <!-- Mobile/Global Sidebar Overlay -->
     {#if isSidebarOpen}
@@ -120,7 +121,6 @@
     {/if}
 
     <!-- Sidebar (Shared Global) -->
-    {#if isAppRoute && !isReaderOrQuiz}
       <aside class="fixed inset-y-0 left-0 bg-white z-[70] w-72 border-r border-gray-100 p-6 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 
         {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:m-4 lg:rounded-[2.5rem] lg:h-[calc(100vh-2rem)] lg:shadow-xl lg:shadow-blue-900/5">
         
@@ -187,13 +187,11 @@
             {/if}
         </div>
       </aside>
-    {/if}
 
     <!-- Content Area (Always min-w-1024) -->
     <div class="flex-1 flex flex-col min-w-0 h-full relative">
       
       <!-- Global Header -->
-      {#if isAppRoute && !isReaderOrQuiz}
         <header class="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center shrink-0 z-[50] sticky top-0 px-3 md:px-8">
             <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -246,10 +244,9 @@
                 </div>
             </div>
         </header>
-      {/if}
 
       <!-- Main Scrollable Content -->
-      <main class="w-full relative {isAppRoute && !isReaderOrQuiz ? 'flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-8' : 'flex-1'}">
+      <main class="flex-1 overflow-y-auto w-full relative px-4 md:px-10 py-6 md:py-8">
           <div class="w-full h-full">
               {@render children()}
           </div>
@@ -257,6 +254,13 @@
     </div>
   </div>
 </div>
+{:else}
+  <!-- Clean Wrapper For Landing / Auth / Reader Pages -->
+  <div class="w-full min-h-screen relative font-poppins overflow-x-hidden bg-white">
+      {@render children()}
+  </div>
+{/if}
+
 
 <!-- Unified Logout Modal -->
 {#if showLogoutModal}
