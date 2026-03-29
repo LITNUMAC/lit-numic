@@ -249,7 +249,7 @@
       {/if}
 
       <!-- Main Scrollable Content -->
-      <main class="flex-1 overflow-y-auto w-full relative {isAppRoute && !isReaderOrQuiz ? 'px-4 md:px-10 py-6 md:py-8' : ''}">
+      <main class="w-full relative {isAppRoute && !isReaderOrQuiz ? 'flex-1 overflow-y-auto px-4 md:px-10 py-6 md:py-8' : 'flex-1'}">
           <div class="w-full h-full">
               {@render children()}
           </div>
