@@ -150,7 +150,7 @@
 
   async function fetchProfile() {
     loading = true;
-    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
     if (data) {
       profile = {
         full_name: data.full_name || '',

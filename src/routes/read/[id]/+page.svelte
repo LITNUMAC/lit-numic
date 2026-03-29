@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy, getContext } from 'svelte';
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   import { supabase } from '$lib/supabaseClient';
   import { ArrowLeft, Target, Lock, Zap, CheckCircle } from 'lucide-svelte';
 
@@ -252,7 +253,7 @@
                 
                 {#if isUnlocked}
                     <button 
-                        onclick={() => { saveProgressToDB(); window.location.href = `/quiz/${comicId}`; }}
+                        onclick={() => { saveProgressToDB(); goto(`/quiz/${comicId}`); }}
                         class="bg-blue-600 text-white px-10 py-4 rounded-3xl font-black text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                     >
                         <span>AMBIL TANTANGAN</span>

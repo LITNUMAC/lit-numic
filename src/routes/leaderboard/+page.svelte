@@ -25,7 +25,7 @@
 
         // 2. Parallel Fetching dengan Specific Columns & Limit
         const [settingsRes, leaderboardRes] = await Promise.all([
-            supabase.from('app_settings').select('leaderboard_active').eq('id', 1).single(),
+            supabase.from('app_settings').select('leaderboard_active').eq('id', 1).maybeSingle(),
             supabase.from('profiles')
                 .select('id, full_name, username, avatar_url, streak, class, level')
                 .order('streak', { ascending: false })

@@ -43,7 +43,7 @@
 
         // 2. Parallel Fetching dengan Specific Columns
         const [comicRes, questionsRes] = await Promise.all([
-            supabase.from('comics').select('id, title').eq('id', comicId).single(),
+            supabase.from('comics').select('id, title').eq('id', comicId).maybeSingle(),
             supabase.from('questions')
                 .select('id, comic_id, type, question_text, option_a, option_b, option_c, option_d, correct_answer, tags, created_at')
                 .eq('comic_id', comicId)

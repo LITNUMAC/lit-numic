@@ -1,6 +1,7 @@
 <script>
     import { onMount, getContext } from 'svelte';
     import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
     import { supabase } from '$lib/supabaseClient';
     import { fly, fade } from 'svelte/transition';
   import { Info, PenTool, Rocket, CheckCircle, XCircle, Lightbulb, ChevronRight, Lock } from 'lucide-svelte';
@@ -324,7 +325,7 @@
                                 </div>
                             </div>
                         {/each}
-                        <button onclick={() => window.location.href = '/dashboard'} class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Kembali ke Dashboard</button>
+                        <button onclick={() => goto('/dashboard')} class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Kembali ke Dashboard</button>
                     </div>
                 {:else}
                     <!-- Fallback: No questions exist -->
@@ -334,7 +335,7 @@
                         </div>
                         <h2 class="text-2xl font-black text-blue-900 font-fredoka mt-4">Belum Ada Soal!</h2>
                         <p class="text-gray-600 font-medium">Tantangan untuk komik ini sedang disiapkan oleh Admin.<br/>Silakan kembali lagi nanti ya!</p>
-                        <button onclick={() => window.location.href = '/komik'} class="mt-8 px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md">
+                        <button onclick={() => goto('/komik')} class="mt-8 px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md">
                             Kembali ke Daftar Komik
                         </button>
                     </div>

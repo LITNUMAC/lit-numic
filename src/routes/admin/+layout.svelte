@@ -13,8 +13,8 @@
         }
 
         // Proteksi Role: Hanya Admin yang boleh masuk
-        const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-        if (data && data.role !== 'admin') {
+        const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).maybeSingle();
+        if (!data || data.role !== 'admin') {
             alert("Akses Ditolak! Anda bukan Admin.");
             window.location.href = '/dashboard'; 
             return;

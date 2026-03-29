@@ -37,7 +37,7 @@
             fetchProfile();
         }
         // Load leaderboard setting
-        const { data } = await supabase.from('app_settings').select('leaderboard_active').eq('id', 1).single();
+        const { data } = await supabase.from('app_settings').select('leaderboard_active').eq('id', 1).maybeSingle();
         if (data) isLeaderboardActive = data.leaderboard_active;
         leaderboardLoading = false;
     });
@@ -45,7 +45,7 @@
     // === PROFILE ===
     async function fetchProfile() {
         loadingProfile = true;
-        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
         if (data) {
             profile = { full_name: data.full_name || '', username: data.username || '', school_origin: data.school_origin || '', class: data.class || '', avatar_url: data.avatar_url };
             avatarUrl = data.avatar_url || `https://api.dicebear.com/9.x/pixel-art/svg?seed=${user.email}`;

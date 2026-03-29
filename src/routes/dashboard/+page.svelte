@@ -2,6 +2,7 @@
   import { onMount, getContext } from 'svelte';
   import { supabase } from '$lib/supabaseClient';
   import { fade, fly, scale } from 'svelte/transition';
+  import { goto } from '$app/navigation';
   import { Library, Flame } from 'lucide-svelte';
   import { t } from '$lib/i18n';
   // Cache import disabled for emergency debug
@@ -237,7 +238,7 @@
                                     <div class="bg-yellow-400 h-full rounded-full transition-all duration-1000" style="width: {lastRead.progressPercent}%"></div>
                                 </div>
                             </div>
-                              <button aria-label="Lanjutkan Membaca" onclick={() => window.location.href = `/read/${lastRead.id}`} class="bg-white text-blue-600 w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform shrink-0">
+                              <button aria-label="Lanjutkan Membaca" onclick={() => goto(`/read/${lastRead.id}`)} class="bg-white text-blue-600 w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="ml-1"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                             </button>
                         </div>
@@ -288,7 +289,7 @@
                             </div>
                             <h4 class="font-bold text-sm md:text-xl text-gray-800 mb-1 md:mb-2 group-hover:text-blue-600 line-clamp-1">{comic.title}</h4>
                             <p class="text-xs text-gray-400 line-clamp-2 mb-3 md:mb-6 leading-relaxed hidden md:block">{comic.description}</p>
-                            <button onclick={() => window.location.href = `/read/${comic.id}`} class="w-full bg-blue-50 text-blue-600 font-black py-2.5 md:py-4 rounded-xl md:rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all active:scale-95 shadow-sm uppercase tracking-widest text-[10px] md:text-xs">Baca </button>
+                            <button onclick={() => goto(`/read/${comic.id}`)} class="w-full bg-blue-50 text-blue-600 font-black py-2.5 md:py-4 rounded-xl md:rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all active:scale-95 shadow-sm uppercase tracking-widest text-[10px] md:text-xs">Baca </button>
                         </div>
                     {/each}
                 </div>
@@ -309,7 +310,7 @@
                             <div class="absolute -top-2 -right-2 bg-green-500 text-white p-1.5 rounded-full shadow-lg z-10"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
                             <div class="h-24 md:h-36 rounded-xl md:rounded-2xl overflow-hidden mb-2 md:mb-4 shadow-inner"><img src={comic.cover_url} alt={comic.title} class="w-full h-full object-cover" /></div>
                             <h4 class="font-bold text-xs md:text-sm text-gray-600 line-clamp-1 mb-2 md:mb-3">{comic.title}</h4>
-                            <button onclick={() => window.location.href = `/read/${comic.id}`} class="text-[9px] md:text-[10px] font-black text-blue-500 py-2 md:py-2.5 bg-blue-50 rounded-lg md:rounded-xl hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest">BACA</button>
+                            <button onclick={() => goto(`/read/${comic.id}`)} class="text-[9px] md:text-[10px] font-black text-blue-500 py-2 md:py-2.5 bg-blue-50 rounded-lg md:rounded-xl hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest">BACA</button>
                         </div>
                     {/each}
                 </div>
