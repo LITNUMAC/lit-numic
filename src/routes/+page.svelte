@@ -208,7 +208,7 @@
   <footer class="bg-slate-50 py-12 px-6 border-t border-gray-200">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6" use:reveal={{ delay: 0 }}>
       <a href="/" class="flex items-center gap-1.5">
-        <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-7 w-auto object-contain flex-shrink-0" />
+        <img src="/logo-icon.svg" alt="LIT-NUMIC" class="h-7 w-auto object-contain flex-shrink-0" loading="lazy" decoding="async" />
         <span class="text-lg font-black tracking-tight font-fredoka leading-none">
           <span class="text-blue-700">LIT-</span><span class="text-yellow-400" style="-webkit-text-stroke: 1px #2952CC;">NUMIC</span>
         </span>
