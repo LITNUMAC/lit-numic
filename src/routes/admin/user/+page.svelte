@@ -55,7 +55,7 @@
 
     // Fungsi hapus user
     async function deleteUser(userId) {
-        if (confirm("⚠️ PERINGATAN: Menghapus profil akan menghilangkan akses user ini. Lanjutkan?")) {
+        if (confirm("PERINGATAN: Menghapus profil akan menghilangkan akses user ini. Lanjutkan?")) {
             const { error } = await supabase
                 .from('profiles')
                 .delete()
@@ -93,7 +93,9 @@
                     placeholder="Cari nama atau email..." 
                     class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all shadow-sm"
                 />
-                <span class="absolute left-3 top-2.5 opacity-30">🔍</span>
+                <span class="absolute left-3 top-2.5 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </span>
             </div>
         </div>
 
@@ -128,17 +130,17 @@
                                     <div class="flex justify-center gap-2 transition-opacity">
                                         <button 
                                             onclick={() => toggleRole(user.id, user.role)}
-                                            class="bg-yellow-50 text-yellow-600 p-2 rounded-lg hover:bg-yellow-500 hover:text-white transition-all text-xs font-bold"
+                                            class="bg-yellow-50 text-yellow-600 p-2 rounded-lg hover:bg-yellow-500 hover:text-white transition-all text-xs font-bold flex items-center justify-center"
                                             title="Ubah Role"
                                         >
-                                            🔄
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21v-5h5"/></svg>
                                         </button>
                                         <button 
                                             onclick={() => deleteUser(user.id)}
-                                            class="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all text-xs font-bold"
+                                            class="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all text-xs font-bold flex items-center justify-center"
                                             title="Hapus User"
                                         >
-                                            🗑️
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                         </button>
                                     </div>
                                 </td>

@@ -58,7 +58,7 @@
     }
 
     async function deleteComic(id) {
-        if (confirm("⚠️ Hapus komik ini secara permanen? Seluruh soal terkait juga akan terhapus.")) {
+        if (confirm("PERINGATAN: Hapus komik ini secara permanen? Seluruh soal terkait juga akan terhapus.")) {
             // Hapus record terkait terlebih dahulu (cascade manual)
             const { error: e1 } = await supabase.from('student_progress').delete().eq('comic_id', id);
             if (e1) console.warn('Hapus student_progress gagal (mungkin RLS):', e1.message);

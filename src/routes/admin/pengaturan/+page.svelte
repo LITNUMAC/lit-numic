@@ -118,7 +118,7 @@
             }
             const { data, error } = await supabase.from('profiles').update({ full_name: profile.full_name, username: profile.username, school_origin: profile.school_origin, class: profile.class, avatar_url: profile.avatar_url }).eq('id', user.id).select();
             if (error) throw error;
-            alert('Profil berhasil diupdate! 🎉');
+            alert('Profil berhasil diupdate!');
             files = null;
             invalidateAll();
         } catch (err) { alert('Gagal: ' + err.message); }
@@ -132,7 +132,7 @@
         pwLoading = true; pwMessage = '';
         const { error } = await supabase.auth.updateUser({ password: newPassword });
         if (error) { pwMessage = 'Error: ' + error.message; pwSuccess = false; }
-        else { pwMessage = 'Password berhasil diubah! ✅'; pwSuccess = true; newPassword = ''; confirmPassword = ''; }
+        else { pwMessage = 'Password berhasil diubah!'; pwSuccess = true; newPassword = ''; confirmPassword = ''; }
         pwLoading = false;
     }
 
@@ -143,7 +143,7 @@
         const { error } = await supabase.from('app_settings').update({ leaderboard_active: newState }).eq('id', 1);
         if (!error) {
             isLeaderboardActive = newState;
-            alert(isLeaderboardActive ? '✅ Leaderboard DIAKTIFKAN!' : '❌ Leaderboard DIMATIKAN!');
+            alert(isLeaderboardActive ? 'Leaderboard DIAKTIFKAN!' : 'Leaderboard DIMATIKAN!');
         } else { alert('Gagal: ' + error.message); }
         leaderboardSaving = false;
     }
@@ -151,7 +151,7 @@
 
 <div class="p-4 md:p-8 font-poppins max-w-5xl mx-auto">
     <div class="mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-blue-900 font-fredoka">⚙️ Pengaturan</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-blue-900 font-fredoka flex items-center gap-2"><Settings size={28} /> Pengaturan</h2>
         <p class="text-sm text-gray-400 mt-1">Kelola profil, akun, keamanan, dan konfigurasi aplikasi.</p>
     </div>
 
@@ -271,10 +271,10 @@
                 <p class="text-slate-500 text-xs mb-4">Ubah bahasa tampilan aplikasi.</p>
                 <div class="flex gap-2 flex-wrap">
                     <button onclick={toggleLocale} class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all border {$locale === 'id' ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}">
-                        🇮🇩 Indonesia
+                        ID Indonesia
                     </button>
                     <button onclick={toggleLocale} class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all border {$locale === 'en' ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}">
-                        🇬🇧 English
+                        EN English
                     </button>
                 </div>
             </div>
@@ -322,8 +322,9 @@
                     <div>
                         <h4 class="text-base font-bold text-gray-800">Status Leaderboard Siswa</h4>
                         <p class="text-sm text-gray-500 mt-1">Jika dimatikan, siswa tidak bisa melihat papan peringkat.</p>
-                        <span class="inline-block mt-2 text-xs font-bold px-3 py-1 rounded-full {isLeaderboardActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
-                            {isLeaderboardActive ? '🟢 Aktif' : '🔴 Dimatikan'}
+                        <span class="inline-block mt-2 text-xs font-bold px-3 py-1 rounded-full flex items-center w-fit gap-1.5 {isLeaderboardActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                            <span class="w-1.5 h-1.5 rounded-full {isLeaderboardActive ? 'bg-green-500' : 'bg-gray-400'}"></span>
+                            {isLeaderboardActive ? 'Aktif' : 'Dimatikan'}
                         </span>
                     </div>
                     <button

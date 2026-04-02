@@ -83,8 +83,9 @@
                                 </span>
                             {/if}
 
-                            <a href="/admin/soal/{comic.id}" class="block w-full text-center bg-blue-50 text-blue-600 text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600 hover:text-white transition-colors">
-                                Kelola Soal 📝
+                            <a href="/admin/soal/{comic.id}" class="flex items-center justify-center w-full gap-1.5 bg-blue-50 text-blue-600 text-xs font-bold py-2.5 rounded-xl hover:bg-blue-600 hover:text-white transition-colors">
+                                Kelola Soal
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                             </a>
                         </div>
                     </div>
